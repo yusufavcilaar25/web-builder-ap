@@ -2,35 +2,39 @@
 <html lang="tr">
 <head>
     <meta charset="UTF-8">
-    <title>Yusuf Cloud Studio | SaaS</title>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&family=Montserrat:wght@700&family=Playfair+Display&display=swap" rel="stylesheet">
+    <title>Yusuf Studio | Pro Element Edition</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&family=Montserrat:wght@700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="https://unpkg.com/grapesjs/dist/css/grapes.min.css">
     
     <style>
-        body, html { height: 100%; margin: 0; font-family: 'Poppins', sans-serif; background: #f1f5f9; }
-        .top-nav { height: 65px; background: white; display: flex; align-items: center; justify-content: space-between; padding: 0 30px; border-bottom: 1px solid #e2e8f0; }
-        .logo { font-weight: 700; color: #2563eb; font-family: 'Montserrat'; font-size: 1.3rem; }
+        body, html { height: 100%; margin: 0; font-family: 'Poppins', sans-serif; }
+        .top-nav { height: 60px; background: white; display: flex; align-items: center; justify-content: space-between; padding: 0 25px; border-bottom: 1px solid #e2e8f0; }
+        .logo { font-weight: 700; color: #2563eb; font-family: 'Montserrat'; }
+        .publish-btn { background: #2563eb; color: white; border: none; padding: 10px 20px; border-radius: 8px; cursor: pointer; font-weight: 600; }
         
-        /* Giriş Paneli */
-        .auth-zone button { padding: 8px 16px; border-radius: 8px; border: 1px solid #ddd; cursor: pointer; font-family: 'Poppins'; }
-        .btn-reg { background: #2563eb; color: white; border: none !important; margin-left: 10px; }
-
-        .gjs-one-bg { background-color: #ffffff !important; }
-        .gjs-cv-canvas { background-color: #f8fafc !important; }
+        /* Sidebar Blok Görünümü */
+        .gjs-block {
+            width: 100% !important;
+            min-height: 85px !important;
+            border: 1px solid #edf2f7 !important;
+            background-color: #ffffff !important;
+            color: #4a5568 !important;
+            border-radius: 8px !important;
+            transition: all 0.2s ease;
+        }
+        .gjs-block:hover { border-color: #2563eb !important; color: #2563eb !important; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1); }
     </style>
 </head>
 <body>
 
     <div class="top-nav">
-        <div class="logo"><i class="fa-solid fa-cloud-bolt"></i> YUSUF STUDIO</div>
-        <div class="auth-zone">
+        <div class="logo">YUSUF // PRO BUILDER</div>
+        <div class="auth-info">
             {% if current_user.is_authenticated %}
-                <span>Hoş geldin, <b>{{ current_user.username }}</b></span>
-                <a href="/logout"><button>Çıkış Yap</button></a>
+                <button class="publish-btn" onclick="saveNow()">KAYDET</button>
             {% else %}
-                <button onclick="handleAuth('login')">Giriş Yap</button>
-                <button class="btn-reg" onclick="handleAuth('register')">Ücretsiz Başla</button>
+                <small>Kayıt için giriş yapın</small>
             {% endif %}
         </div>
     </div>
@@ -43,11 +47,10 @@
     <script>
         const editor = grapesjs.init({
             container: '#gjs',
-            height: 'calc(100vh - 65px)',
-            // OTOMATİK KAYIT AYARI
+            height: 'calc(100vh - 60px)',
             storageManager: {
                 type: 'remote',
-                stepsBeforeSave: 1, // Her bir değişiklikte kaydet
+                stepsBeforeSave: 1,
                 urlStore: '/auto-save',
                 urlLoad: '/load-site',
                 contentTypeJson: true,
@@ -55,46 +58,103 @@
             plugins: ['gjs-preset-webpage'],
             blockManager: {
                 blocks: [
+                    // --- BÖLÜMLER ---
                     {
-                        id: 'icon-block',
-                        label: '<i class="fa-solid fa-star"></i><br>Ikonlu Kart',
+                        id: 'hero-split',
+                        label: '<i class="fa fa-columns"></i><br>Hero (İkili)',
+                        category: 'Bölümler',
+                        content: `<section style="display:flex; align-items:center; padding:80px 10%; background:#fff; gap:50px;">
+                                    <div style="flex:1;">
+                                        <h1 style="font-size:3.5rem; line-height:1; margin-bottom:20px;">Fikirlerinizi <span style="color:#2563eb;">Hayata</span> Geçirin</h1>
+                                        <p style="font-size:1.1rem; color:#666;">Modern dünyada yerinizi almak için ihtiyacınız olan her şey burada.</p>
+                                        <button style="padding:15px 35px; background:#2563eb; color:white; border:none; border-radius:50px; font-weight:600; cursor:pointer;">Başlayın</button>
+                                    </div>
+                                    <div style="flex:1; background:#f1f5f9; height:400px; border-radius:20px; display:flex; align-items:center; justify-content:center; color:#cbd5e1; font-size:4rem;"><i class="fa fa-image"></i></div>
+                                  </section>`
+                    },
+                    {
+                        id: 'features-3',
+                        label: '<i class="fa fa-th-large"></i><br>3\'lü Özellik',
+                        category: 'Bölümler',
+                        content: `<section style="padding:60px 10%; display:grid; grid-template-columns: repeat(3, 1fr); gap:30px; text-align:center;">
+                                    <div style="padding:30px; border:1px solid #eee; border-radius:15px;">
+                                        <i class="fa fa-bolt" style="font-size:2rem; color:#2563eb; margin-bottom:15px;"></i>
+                                        <h3>Hızlı Dağıtım</h3>
+                                        <p style="color:#777;">Saniyeler içinde canlıya alın.</p>
+                                    </div>
+                                    <div style="padding:30px; border:1px solid #eee; border-radius:15px;">
+                                        <i class="fa fa-shield-halved" style="font-size:2rem; color:#2563eb; margin-bottom:15px;"></i>
+                                        <h3>Tam Güvenlik</h3>
+                                        <p style="color:#777;">SSL ve koruma standartları.</p>
+                                    </div>
+                                    <div style="padding:30px; border:1px solid #eee; border-radius:15px;">
+                                        <i class="fa fa-code" style="font-size:2rem; color:#2563eb; margin-bottom:15px;"></i>
+                                        <h3>Temiz Kod</h3>
+                                        <p style="color:#777;">Geliştirici dostu çıktı.</p>
+                                    </div>
+                                  </section>`
+                    },
+                    // --- BİLEŞENLER ---
+                    {
+                        id: 'pricing-card',
+                        label: '<i class="fa fa-tags"></i><br>Fiyat Kartı',
                         category: 'Bileşenler',
-                        content: `<div style="padding:20px; text-align:center; border:1px solid #eee;">
-                                    <i class="fa-solid fa-rocket" style="font-size:3rem; color:#2563eb;"></i>
-                                    <h3>Harika Özellik</h3>
+                        content: `<div style="max-width:350px; margin:20px auto; padding:40px; border:2px solid #2563eb; border-radius:20px; text-align:center; background:#fff;">
+                                    <span style="background:#dbeafe; color:#2563eb; padding:5px 15px; border-radius:20px; font-size:0.8rem; font-weight:600;">EN POPÜLER</span>
+                                    <h2 style="margin-top:20px;">Pro Plan</h2>
+                                    <h1 style="font-size:3rem; margin:10px 0;">$49<small style="font-size:1rem; color:#888;">/ay</small></h1>
+                                    <ul style="list-style:none; padding:0; margin:30px 0; color:#555; line-height:2;">
+                                        <li><i class="fa fa-check" style="color:#22c55e;"></i> Sınırsız Proje</li>
+                                        <li><i class="fa fa-check" style="color:#22c55e;"></i> Özel Domain</li>
+                                        <li><i class="fa fa-check" style="color:#22c55e;"></i> 7/24 Teknik Destek</li>
+                                    </ul>
+                                    <button style="width:100%; padding:15px; background:#2563eb; color:white; border:none; border-radius:10px; font-weight:bold;">Satın Al</button>
                                   </div>`
                     },
                     {
-                        id: 'font-changer',
-                        label: '<b>T</b> Dinamik Font Bloğu',
+                        id: 'testimonial',
+                        label: '<i class="fa fa-quote-left"></i><br>Referans',
                         category: 'Bileşenler',
-                        content: `<div style="padding:20px;">
-                                    <h2 style="font-family:'Poppins';">Başlığı Değiştir</h2>
-                                    <select onchange="this.parentElement.style.fontFamily = this.value">
-                                        <option value="'Poppins'">Modern (Poppins)</option>
-                                        <option value="'Playfair Display'">Klasik (Playfair)</option>
-                                        <option value="'Montserrat'">Güçlü (Montserrat)</option>
-                                        <option value="serif">Geleneksel (Serif)</option>
-                                    </select>
+                        content: `<div style="padding:30px; background:#f8fafc; border-left:5px solid #2563eb; margin:20px;">
+                                    <p style="font-style:italic; font-size:1.2rem; color:#334155;">"Yusuf Studio ile sitemi kurmak sadece bir saatimi aldı. İnanılmaz!"</p>
+                                    <div style="margin-top:20px; display:flex; align-items:center; gap:10px;">
+                                        <div style="width:40px; height:40px; background:#cbd5e1; border-radius:50%;"></div>
+                                        <div><strong>Ahmet Yılmaz</strong><br><small>CEO, TechCorp</small></div>
+                                    </div>
                                   </div>`
+                    },
+                    // --- FORM ---
+                    {
+                        id: 'form-modern',
+                        label: '<i class="fa fa-envelope"></i><br>Bize Ulaşın',
+                        category: 'Formlar',
+                        content: `<form style="padding:40px; background:white; border-radius:15px; box-shadow:0 10px 25px rgba(0,0,0,0.05); max-width:500px; margin:auto;">
+                                    <h2 style="margin-bottom:25px;">Mesaj Gönderin</h2>
+                                    <input type="text" placeholder="Adınız" style="width:100%; padding:12px; margin-bottom:15px; border:1px solid #ddd; border-radius:8px;">
+                                    <input type="email" placeholder="E-posta Adresiniz" style="width:100%; padding:12px; margin-bottom:15px; border:1px solid #ddd; border-radius:8px;">
+                                    <textarea placeholder="Mesajınız" style="width:100%; padding:12px; margin-bottom:15px; border:1px solid #ddd; border-radius:8px; height:100px;"></textarea>
+                                    <button type="button" style="width:100%; padding:12px; background:#2563eb; color:white; border:none; border-radius:8px; font-weight:600;">Gönder</button>
+                                  </form>`
+                    },
+                    // --- FOOTER ---
+                    {
+                        id: 'footer-dark',
+                        label: '<i class="fa fa-window-minimize"></i><br>Alt Bilgi (Koyu)',
+                        category: 'Bileşenler',
+                        content: `<footer style="background:#0f172a; color:#94a3b8; padding:60px 10%; display:grid; grid-template-columns: repeat(4, 1fr); gap:40px;">
+                                    <div><h3 style="color:white; margin-bottom:20px;">YUSUF STUDIO</h3><p>Dünyanın en kolay web sitesi kurucusu.</p></div>
+                                    <div><h4 style="color:white; margin-bottom:20px;">Ürün</h4><p>Özellikler</p><p>Fiyatlandırma</p></div>
+                                    <div><h4 style="color:white; margin-bottom:20px;">Şirket</h4><p>Hakkımızda</p><p>Kariyer</p></div>
+                                    <div><h4 style="color:white; margin-bottom:20px;">Sosyal</h4><i class="fa-brands fa-twitter" style="font-size:1.5rem; margin-right:15px;"></i><i class="fa-brands fa-linkedin" style="font-size:1.5rem;"></i></div>
+                                  </footer>`
                     }
                 ]
             }
         });
 
-        // Kullanıcı Giriş/Kayıt Simülasyonu
-        async function handleAuth(type) {
-            const user = prompt("Kullanıcı Adı:");
-            const pass = prompt("Şifre:");
-            if(!user || !pass) return;
-
-            const res = await fetch('/' + type, {
-                method: 'POST',
-                headers: {'Content-Type': 'application/json'},
-                body: JSON.stringify({username: user, password: pass})
-            });
-            if(res.ok) location.reload();
-            else alert("Hata: " + (await res.json()).message);
+        function saveNow() {
+            editor.store();
+            alert("✅ Değişiklikler buluta kaydedildi!");
         }
 
         editor.I18n.setLocale('tr');
