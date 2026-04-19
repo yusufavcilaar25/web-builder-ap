@@ -2,77 +2,38 @@
 <html lang="tr">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>YUSUF AI | WEB ARCHITECT</title>
-    
+    <title>Yusuf Studio | Full Builder</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://unpkg.com/grapesjs/dist/css/grapes.min.css">
     <link rel="stylesheet" href="https://unpkg.com/grapesjs-preset-webpage/dist/grapesjs-preset-webpage.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Syncopate:wght@400;700&family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
-    
     <style>
-        :root {
-            --neon-main: #00ff9d;
-            --neon-alt: #0084ff;
-            --deep-space: #020617;
-            --panel-blur: rgba(15, 23, 42, 0.8);
-        }
-
-        body, html { height: 100%; margin: 0; background: var(--deep-space); font-family: 'Inter', sans-serif; overflow: hidden; color: white; }
-
-        /* Hareketli Arka Plan Efekti */
-        .bg-glow {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: radial-gradient(circle at 50% 50%, #1e293b 0%, #020617 100%);
-            z-index: -1;
-        }
-
-        /* Glassmorphism Header */
-        .header-main {
-            height: 70px;
-            background: var(--panel-blur);
-            backdrop-filter: blur(15px);
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding: 0 40px;
-            border-bottom: 1px solid rgba(0, 255, 157, 0.3);
-            z-index: 1000;
-        }
-
-        .brand { font-family: 'Syncopate', sans-serif; font-weight: 700; font-size: 1.4rem; letter-spacing: 4px; color: var(--neon-main); text-shadow: 0 0 10px rgba(0, 255, 157, 0.5); }
-
-        .controls { display: flex; gap: 20px; }
-
-        .btn-ai {
-            background: linear-gradient(45deg, var(--neon-main), var(--neon-alt));
-            border: none; color: #000; padding: 10px 25px; border-radius: 50px;
-            font-family: 'Syncopate', sans-serif; font-size: 0.7rem; font-weight: bold;
-            cursor: pointer; transition: 0.3s all; text-transform: uppercase;
-        }
-
-        .btn-ai:hover { transform: scale(1.05); box-shadow: 0 0 25px var(--neon-main); }
-
-        /* GrapesJS UI Customize */
-        .gjs-one-bg { background-color: #0f172a !important; }
-        .gjs-two-color { color: #94a3b8 !important; }
-        .gjs-three-bg { background-color: var(--neon-main) !important; color: #000 !important; }
-        .gjs-four-color { color: var(--neon-main) !important; }
+        body, html { height: 100%; margin: 0; font-family: 'Inter', sans-serif; }
+        .navbar { height: 60px; display: flex; align-items: center; justify-content: space-between; padding: 0 24px; border-bottom: 1px solid #e2e8f0; }
+        .navbar-brand { font-weight: 600; color: #0f172a; }
+        .btn-publish { background: #2563eb; color: white; border: none; padding: 8px 16px; border-radius: 6px; cursor: pointer; font-weight: 500; }
         
-        /* Sağ paneldeki ayarların daha okunaklı olması için */
-        .gjs-sm-sector-title { background-color: #1e293b !important; border-bottom: 1px solid #334155 !important; }
+        /* Blokların sidebar'daki görünümü */
+        .gjs-block {
+            width: 100% !important;
+            min-height: 80px !important;
+            padding: 10px !important;
+            border-radius: 4px !important;
+            border: 1px solid #e2e8f0 !important;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            font-size: 11px !important;
+            background-color: #f8fafc !important;
+        }
     </style>
 </head>
 <body>
 
-    <div class="bg-glow"></div>
-
-    <header class="header-main">
-        <div class="brand">YUSUF // ARCHITECT</div>
-        <div class="controls">
-            <button class="btn-ai" onclick="editor.runCommand('canvas-clear')">Sıfırla</button>
-            <button class="btn-ai" onclick="exportBuild()">Deploy (Yayınla)</button>
-        </div>
-    </header>
+    <nav class="navbar">
+        <div class="navbar-brand">YUSUF STUDIO v2.0</div>
+        <button class="btn-publish" onclick="publish()">Yayınla / İndir</button>
+    </nav>
 
     <div id="gjs"></div>
 
@@ -82,53 +43,71 @@
     <script>
         const editor = grapesjs.init({
             container: '#gjs',
-            height: 'calc(100vh - 70px)',
-            fromElement: true,
+            height: 'calc(100vh - 60px)',
             storageManager: false,
-            i18n: {
-                locale: 'tr',
-                messages: {
-                    tr: {
-                        blockManager: { labels: { 'Sections': 'Bloklar', 'Basic': 'Temel' }, categories: { 'Layout': 'Düzen', 'Components': 'Bileşenler', 'Extra': 'Ekstralar' } },
-                        styleManager: { sectors: { 'general': 'Genel', 'layout': 'Yerleşim', 'typography': 'Yazı', 'decorations': 'Görünüm', 'extra': 'Ekstra' } },
-                    }
-                }
-            },
+            i18n: { locale: 'tr' },
             plugins: ['gjs-preset-webpage'],
-            pluginsOpts: {
-                'gjs-preset-webpage': {
-                    modalImportTitle: 'Kodu İçe Aktar',
-                    modalImportLabel: 'HTML/CSS Kodunuzu Buraya Yapıştırın',
-                    textCleanCanvas: 'Tuvali temizlemek istediğinize emin misiniz?'
-                }
+            blockManager: {
+                appendTo: '', // Varsayılan yere ekle
+                blocks: [
+                    {
+                        id: 'section',
+                        label: '<b>Geniş Bölüm</b>',
+                        category: 'Temel',
+                        content: `<section style="padding: 50px 0; background: #f4f4f4; text-align: center;">
+                                    <h1>Yeni Başlık</h1>
+                                    <p>Buraya açıklama metninizi girebilirsiniz.</p>
+                                  </section>`,
+                    },
+                    {
+                        id: 'text',
+                        label: 'Metin Kutusu',
+                        category: 'Temel',
+                        content: '<div style="padding: 10px;">Metin ekleyin...</div>',
+                    },
+                    {
+                        id: 'image',
+                        label: 'Resim',
+                        category: 'Temel',
+                        content: { type: 'image' },
+                    },
+                    {
+                        id: 'button',
+                        label: 'Şık Buton',
+                        category: 'Bileşenler',
+                        content: '<a href="#" style="display:inline-block; background:#2563eb; color:white; padding:10px 20px; border-radius:5px; text-decoration:none;">Tıkla</a>',
+                    },
+                    {
+                        id: 'column-2',
+                        label: '2 Kolonlu Düzen',
+                        category: 'Düzen',
+                        content: `<div style="display: flex; gap: 20px; padding: 20px;">
+                                    <div style="flex: 1; min-height: 50px; border: 1px dashed #ccc;"></div>
+                                    <div style="flex: 1; min-height: 50px; border: 1px dashed #ccc;"></div>
+                                  </div>`,
+                    },
+                    {
+                        id: 'navbar-simple',
+                        label: 'Üst Menü',
+                        category: 'Bileşenler',
+                        content: `<nav style="display: flex; justify-content: space-between; padding: 20px; background: white; border-bottom: 1px solid #ddd;">
+                                    <div>Logo</div>
+                                    <div><a href="#">Ana Sayfa</a> | <a href="#">Hakkımızda</a></div>
+                                  </nav>`,
+                    }
+                ]
             }
         });
 
-        editor.I18n.setLocale('tr');
-
-        // Gelişmiş "Deploy" Simülasyonu
-        function exportBuild() {
+        function publish() {
             const html = editor.getHtml();
             const css = editor.getCss();
-            const fullCode = `
-                <!DOCTYPE html>
-                <html>
-                <head>
-                    <meta charset="UTF-8">
-                    <style>${css}</style>
-                </head>
-                <body>${html}</body>
-                </html>`;
-            
-            // Kullanıcıya şık bir bildirim
-            const blob = new Blob([fullCode], { type: 'text/html' });
-            const url = URL.createObjectURL(blob);
+            const final = `<html><head><style>${css}</style></head><body>${html}</body></html>`;
+            const blob = new Blob([final], { type: 'text/html' });
             const a = document.createElement('a');
-            a.href = url;
-            a.download = 'yusuf-project-v1.html';
+            a.href = URL.createObjectURL(blob);
+            a.download = 'site.html';
             a.click();
-            
-            alert("✅ Tasarım Optimize Edildi!\n🚀 Kodlar 'yusuf-project-v1.html' olarak indirildi.");
         }
     </script>
 </body>
