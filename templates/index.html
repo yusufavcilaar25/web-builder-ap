@@ -4,63 +4,81 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     
-    <title>Yusuf Studio | Sürükle Bırak Web Sitesi Kurucu</title>
-    <meta name="description" content="Yusuf Studio ile kod yazmadan profesyonel, modern ve SEO uyumlu web siteleri tasarlayın. Ücretsiz kayıt olun ve hemen başlayın.">
-    <meta name="keywords" content="web builder, site kurucu, sürükle bırak, no-code, yusuf studio">
+    <title>Yusuf Studio | Elite Web Architect</title>
+    <meta name="description" content="Kod yazmadan hayalindeki web sitesini tasarla ve anında indir.">
     
-    <meta property="og:type" content="website">
-    <meta property="og:url" content="https://yusuf-web-builder.onrender.com/">
-    <meta property="og:title" content="Yusuf Studio | Profesyonel Web Tasarım Platformu">
-    <meta property="og:description" content="Kendi web siteni dakikalar içinde tasarla.">
-    <meta property="og:image" content="https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=1200">
-
-    <meta property="twitter:card" content="summary_large_image">
-    <meta property="twitter:title" content="Yusuf Studio | Web Builder">
-    
-    <link rel="icon" type="image/png" href="https://cdn-icons-png.flaticon.com/512/1055/1055666.png">
-
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Montserrat:wght@800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
     <link rel="stylesheet" href="https://unpkg.com/grapesjs/dist/css/grapes.min.css">
     
     <style>
-        :root { --primary: #2563eb; --slate: #1e293b; }
-        body, html { height: 100%; margin: 0; font-family: 'Inter', sans-serif; overflow: hidden; }
+        :root { --primary: #3b82f6; --dark: #0f172a; --panel: #1e293b; --text: #f8fafc; }
+        body, html { height: 100%; margin: 0; font-family: 'Inter', sans-serif; overflow: hidden; background-color: var(--dark); }
         
-        .navbar { height: 60px; background: white; border-bottom: 1px solid #e2e8f0; display: flex; align-items: center; justify-content: space-between; padding: 0 25px; }
-        .logo { font-weight: 800; color: var(--primary); font-size: 1.2rem; }
+        /* Elite Dark Mode Navbar */
+        .studio-nav { height: 60px; background: var(--panel); border-bottom: 1px solid #334155; display: flex; align-items: center; justify-content: space-between; padding: 0 20px; color: white; }
+        .logo { font-weight: 800; font-family: 'Montserrat'; font-size: 1.3rem; letter-spacing: -0.5px; }
+        .logo span { color: var(--primary); }
         
-        /* Rehber & Karşılama Alanı */
-        #welcome-overlay { position: fixed; inset: 0; background: rgba(255,255,255,0.95); z-index: 5000; display: flex; align-items: center; justify-content: center; text-align: center; }
-        .welcome-card { max-width: 500px; padding: 40px; }
+        /* Gelişmiş Araç Çubuğu */
+        .toolbar { display: flex; gap: 8px; align-items: center; background: #0f172a; padding: 5px 10px; border-radius: 8px; }
+        .tool-btn { background: transparent; color: #94a3b8; border: none; padding: 8px 12px; border-radius: 6px; cursor: pointer; transition: 0.2s; font-size: 14px; }
+        .tool-btn:hover { background: #334155; color: white; }
         
-        .btn { padding: 10px 20px; border-radius: 8px; border: 1px solid #ddd; cursor: pointer; font-weight: 600; }
-        .btn-primary { background: var(--primary); color: white; border: none; }
+        .action-group { display: flex; gap: 10px; align-items: center; }
+        .btn-main { background: var(--primary); color: white; border: none; padding: 8px 16px; border-radius: 6px; font-weight: 600; cursor: pointer; transition: 0.2s; display: flex; align-items: center; gap: 6px; }
+        .btn-main:hover { background: #2563eb; transform: translateY(-1px); }
+        .btn-outline { background: transparent; border: 1px solid #475569; color: white; padding: 8px 16px; border-radius: 6px; cursor: pointer; }
+
+        /* GrapesJS UI Dark Theme Customization */
+        .gjs-one-bg { background-color: var(--panel) !important; }
+        .gjs-two-color { color: #cbd5e1 !important; }
+        .gjs-three-bg { background-color: var(--primary) !important; }
+        .gjs-four-color { color: var(--primary) !important; }
+        .gjs-cv-canvas { background-color: #e2e8f0 !important; } /* Tuval arka planı açık renk kalsın */
+        
+        /* Modal Stilleri */
+        .modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.8); z-index: 9999; align-items: center; justify-content: center; backdrop-filter: blur(4px); }
+        .modal-box { background: var(--panel); color: white; padding: 30px; border-radius: 12px; width: 350px; text-align: center; border: 1px solid #334155; }
+        .modal-box input { width: 100%; padding: 12px; margin: 10px 0; background: #0f172a; border: 1px solid #334155; color: white; border-radius: 6px; box-sizing: border-box; }
     </style>
 </head>
 <body>
 
-    <div id="welcome-overlay">
-        <div class="welcome-card">
-            <h1 style="color: var(--slate);">Yusuf Studio'ya Hoş Geldin! 🚀</h1>
-            <p>Hayalindeki web sitesini kurmak için hazır mısın? Sol paneldeki blokları sürükle ve tasarlamaya başla.</p>
-            <button class="btn btn-primary" onclick="startEditor()">Hemen Başla</button>
+    <nav class="studio-nav">
+        <div class="logo">YUSUF <span>STUDIO</span></div>
+        
+        <div class="toolbar">
+            <button class="tool-btn" onclick="editor.runCommand('core:undo')" title="Geri Al"><i class="fa-solid fa-rotate-left"></i></button>
+            <button class="tool-btn" onclick="editor.runCommand('core:redo')" title="İleri Al"><i class="fa-solid fa-rotate-right"></i></button>
+            <div style="width: 1px; height: 20px; background: #334155; margin: 0 5px;"></div>
+            <button class="tool-btn" onclick="editor.runCommand('core:component-outline')" title="Sınırları Göster"><i class="fa-regular fa-square"></i></button>
+            <button class="tool-btn" onclick="editor.runCommand('core:preview')" title="Tam Ekran Önizleme"><i class="fa-solid fa-eye"></i></button>
+            <button class="tool-btn" onclick="editor.runCommand('core:open-code')" title="HTML/CSS Kodunu Gör"><i class="fa-solid fa-code"></i></button>
         </div>
-    </div>
 
-    <nav class="navbar">
-        <div class="logo">YUSUF // STUDIO</div>
-        <div class="auth">
+        <div class="action-group">
             {% if current_user.is_authenticated %}
-                <span>{{ current_user.username }}</span>
-                <a href="/logout"><button class="btn">Çıkış</button></a>
+                <span style="color: #94a3b8; font-size: 14px; margin-right: 10px;">{{ current_user.username }}</span>
+                <button class="btn-main" onclick="editor.runCommand('gjs-export-zip')"><i class="fa-solid fa-download"></i> Siteyi İndir</button>
+                <a href="/logout"><button class="btn-outline"><i class="fa-solid fa-right-from-bracket"></i></button></a>
             {% else %}
-                <button class="btn" onclick="auth('login')">Giriş</button>
-                <button class="btn btn-primary" onclick="auth('register')">Kayıt Ol</button>
+                <button class="btn-outline" onclick="auth('login')">Giriş Yap</button>
+                <button class="btn-main" onclick="auth('register')">Ücretsiz Başla</button>
             {% endif %}
         </div>
     </nav>
+
+    <div id="authModal" class="modal">
+        <div class="modal-box">
+            <h2 id="modalTitle" style="font-family: 'Montserrat';">Sisteme Gir</h2>
+            <input type="text" id="userIn" placeholder="Kullanıcı Adı">
+            <input type="password" id="passIn" placeholder="Şifre">
+            <button class="btn-main" style="width:100%; justify-content:center; margin-top:15px; padding:12px;" onclick="doAuth()">ONAYLA</button>
+            <p style="margin-top:15px; cursor:pointer; color: #64748b; font-size: 14px;" onclick="closeAuth()">İptal</p>
+        </div>
+    </div>
 
     <div id="gjs"></div>
 
@@ -68,13 +86,12 @@
     <script src="https://unpkg.com/grapesjs-preset-webpage"></script>
 
     <script>
-        function startEditor() {
-            document.getElementById('welcome-overlay').style.display = 'none';
-        }
-
+        // GrapesJS Başlatma
         const editor = grapesjs.init({
             container: '#gjs',
             height: 'calc(100vh - 60px)',
+            showOffsets: true,
+            noticeOnUnload: false,
             storageManager: {
                 type: 'remote',
                 stepsBeforeSave: 1,
@@ -82,35 +99,53 @@
                 urlLoad: '/load-site',
                 contentTypeJson: true,
             },
-            // VARSAYILAN ŞABLON (Boş Tuval Yerine)
             canvas: {
-                styles: ['https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap'],
+                styles: ['https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap']
             },
             plugins: ['gjs-preset-webpage'],
+            pluginsOpts: {
+                'gjs-preset-webpage': {
+                    modalImportTitle: 'Kodu İçeri Aktar',
+                    modalImportLabel: 'Kendi HTML/CSS kodunuzu buraya yapıştırın',
+                    modalImportButton: 'İçeri Aktar',
+                }
+            },
+            i18n: { locale: 'tr' }
         });
 
-        // Giriş Yapılınca Şablonu Yükle
+        // Ortadaki "Hoş Geldin" Boş Tuval Tasarımı
         editor.on('load', () => {
             if(!editor.getHtml() || editor.getHtml() === '<body></body>') {
                 editor.setComponents(`
-                    <header style="padding: 100px 20px; text-align: center; background: #f8fafc;">
-                        <h1 style="font-size: 3rem;">Yeni Projeniz</h1>
-                        <p>Burayı dilediğiniz gibi düzenleyebilir veya yeni bloklar ekleyebilirsiniz.</p>
-                    </header>
+                    <div style="display:flex; flex-direction:column; align-items:center; justify-content:center; height:100vh; background-color:#f8fafc; font-family:'Inter', sans-serif;">
+                        <div style="text-align:center; padding:50px; background:white; border-radius:20px; box-shadow:0 10px 25px rgba(0,0,0,0.05); max-width:600px;">
+                            <h1 style="color:#0f172a; margin-bottom:15px;">Yeni Projeye Başla</h1>
+                            <p style="color:#64748b; font-size:1.1rem; line-height:1.6;">Sağ paneldeki blokları (ikona tıklayarak açabilirsiniz) buraya sürükleyin ve tasarımınızı oluşturun.</p>
+                        </div>
+                    </div>
                 `);
             }
         });
 
-        async function auth(type) {
-            const user = prompt("Kullanıcı Adı:");
-            const pass = prompt("Şifre:");
-            const res = await fetch('/' + type, {
+        // Auth Scriptleri
+        let currentMode = 'login';
+        function auth(m) {
+            currentMode = m;
+            document.getElementById('modalTitle').innerText = m === 'login' ? 'Giriş Yap' : 'Hesap Oluştur';
+            document.getElementById('authModal').style.display = 'flex';
+        }
+        function closeAuth() { document.getElementById('authModal').style.display = 'none'; }
+        
+        async function doAuth() {
+            const username = document.getElementById('userIn').value;
+            const password = document.getElementById('passIn').value;
+            const res = await fetch('/' + currentMode, {
                 method: 'POST',
                 headers: {'Content-Type': 'application/json'},
-                body: JSON.stringify({username: user, password: pass})
+                body: JSON.stringify({username, password})
             });
             if(res.ok) location.reload();
-            else alert("Hata oluştu!");
+            else alert("İşlem başarısız!");
         }
     </script>
 </body>
