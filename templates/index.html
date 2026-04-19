@@ -4,6 +4,8 @@
     <meta charset="UTF-8">
     <title>Yusuf Studio | Pro Tasarım Editörü</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <!-- Yeni eklenen Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&family=Roboto:wght@300;400;500;700&family=Open+Sans:wght@300;400;600;700&family=Montserrat:wght@300;400;600;700&family=Lato:wght@300;400;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="https://unpkg.com/grapesjs/dist/css/grapes.min.css">
     <style>
@@ -207,6 +209,48 @@
             container: '#gjs',
             height: '100%',
             storageManager: false,
+            // Style Manager ile font family seçeneklerini genişletiyoruz
+            styleManager: {
+                sectors: [{
+                    name: 'Genel',
+                    open: true,
+                    buildProps: ['float', 'display', 'position', 'top', 'right', 'left', 'bottom'],
+                }, {
+                    name: 'Tipografi',
+                    open: true,
+                    buildProps: ['font-family', 'font-size', 'font-weight', 'letter-spacing', 'color', 'text-align', 'line-height', 'text-decoration'],
+                    properties: [{
+                        property: 'font-family',
+                        // Varsayılan fontlara ek olarak yeni fontları buraya ekliyoruz
+                        defaults: [
+                            { name: 'Arial', value: 'Arial, Helvetica, sans-serif' },
+                            { name: 'Georgia', value: 'Georgia, serif' },
+                            { name: 'Inter', value: "'Inter', sans-serif" },
+                            { name: 'Poppins', value: "'Poppins', sans-serif" },
+                            { name: 'Roboto', value: "'Roboto', sans-serif" },
+                            { name: 'Open Sans', value: "'Open Sans', sans-serif" },
+                            { name: 'Montserrat', value: "'Montserrat', sans-serif" },
+                            { name: 'Lato', value: "'Lato', sans-serif" }
+                        ]
+                    }]
+                }, {
+                    name: 'Boyutlandırma',
+                    open: false,
+                    buildProps: ['width', 'height', 'max-width', 'min-height', 'margin', 'padding']
+                }, {
+                    name: 'Arka Plan',
+                    open: false,
+                    buildProps: ['background-color', 'background-image', 'background-repeat', 'background-position']
+                }, {
+                    name: 'Kenarlık',
+                    open: false,
+                    buildProps: ['border-radius', 'border', 'box-shadow']
+                }, {
+                    name: 'Efektler',
+                    open: false,
+                    buildProps: ['opacity', 'transition', 'transform']
+                }]
+            },
             blockManager: {
                 blocks: [
                     { id: 'hero', label: 'Hero Bölüm', content: '<section style="background:#0f172a; color:white; padding:80px 20px; text-align:center;"><h1>Büyük Başlık</h1><p>Alt metin</p><button style="background:#38bdf8; border:none; padding:12px 24px;">Başla</button></section>' },
