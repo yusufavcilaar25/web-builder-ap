@@ -2,38 +2,29 @@
 <html lang="tr">
 <head>
     <meta charset="UTF-8">
-    <title>Yusuf Studio | Full Builder</title>
+    <title>Yusuf Pro Builder | Element Edition</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://unpkg.com/grapesjs/dist/css/grapes.min.css">
     <link rel="stylesheet" href="https://unpkg.com/grapesjs-preset-webpage/dist/grapesjs-preset-webpage.min.css">
     <style>
-        body, html { height: 100%; margin: 0; font-family: 'Inter', sans-serif; }
-        .navbar { height: 60px; display: flex; align-items: center; justify-content: space-between; padding: 0 24px; border-bottom: 1px solid #e2e8f0; }
-        .navbar-brand { font-weight: 600; color: #0f172a; }
-        .btn-publish { background: #2563eb; color: white; border: none; padding: 8px 16px; border-radius: 6px; cursor: pointer; font-weight: 500; }
+        body, html { height: 100%; margin: 0; font-family: 'Inter', sans-serif; background: #f1f5f9; }
+        .top-bar { height: 60px; background: white; display: flex; align-items: center; justify-content: space-between; padding: 0 25px; border-bottom: 1px solid #e2e8f0; position: relative; z-index: 100; }
+        .logo { font-weight: 700; color: #1e293b; letter-spacing: -1px; }
+        .btn-push { background: #2563eb; color: white; border: none; padding: 10px 20px; border-radius: 8px; cursor: pointer; font-weight: 600; transition: 0.2s; }
+        .btn-push:hover { background: #1d4ed8; }
         
-        /* Blokların sidebar'daki görünümü */
-        .gjs-block {
-            width: 100% !important;
-            min-height: 80px !important;
-            padding: 10px !important;
-            border-radius: 4px !important;
-            border: 1px solid #e2e8f0 !important;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            font-size: 11px !important;
-            background-color: #f8fafc !important;
-        }
+        /* Editör Paneli Düzenlemesi */
+        .gjs-cv-canvas { background-color: #f1f5f9 !important; }
+        .gjs-block { width: 100% !important; min-height: 90px !important; border-radius: 6px !important; border: 1px solid #e2e8f0 !important; transition: 0.2s; background: white !important; }
+        .gjs-block:hover { border-color: #2563eb !important; box-shadow: 0 4px 12px rgba(0,0,0,0.05); }
     </style>
 </head>
 <body>
 
-    <nav class="navbar">
-        <div class="navbar-brand">YUSUF STUDIO v2.0</div>
-        <button class="btn-publish" onclick="publish()">Yayınla / İndir</button>
-    </nav>
+    <div class="top-bar">
+        <div class="logo">YUSUF STUDIO V3</div>
+        <button class="btn-push" onclick="downloadSite()">SİTEYİ İNDİR</button>
+    </div>
 
     <div id="gjs"></div>
 
@@ -48,65 +39,66 @@
             i18n: { locale: 'tr' },
             plugins: ['gjs-preset-webpage'],
             blockManager: {
-                appendTo: '', // Varsayılan yere ekle
                 blocks: [
                     {
-                        id: 'section',
-                        label: '<b>Geniş Bölüm</b>',
-                        category: 'Temel',
-                        content: `<section style="padding: 50px 0; background: #f4f4f4; text-align: center;">
-                                    <h1>Yeni Başlık</h1>
-                                    <p>Buraya açıklama metninizi girebilirsiniz.</p>
-                                  </section>`,
+                        id: 'hero-sec',
+                        label: '🚀 Dev Başlık (Hero)',
+                        category: 'Bölümler',
+                        content: `<section style="padding: 80px 20px; text-align: center; background: #1e293b; color: white;">
+                                    <h1 style="font-size: 3rem;">Geleceği İnşa Edin</h1>
+                                    <p style="font-size: 1.2rem; opacity: 0.8;">Hızlı, güvenilir ve modern web çözümleri.</p>
+                                    <button style="padding: 15px 30px; background: #2563eb; border: none; color: white; border-radius: 5px; margin-top: 20px;">Hemen Başla</button>
+                                  </section>`
                     },
                     {
-                        id: 'text',
-                        label: 'Metin Kutusu',
-                        category: 'Temel',
-                        content: '<div style="padding: 10px;">Metin ekleyin...</div>',
-                    },
-                    {
-                        id: 'image',
-                        label: 'Resim',
-                        category: 'Temel',
-                        content: { type: 'image' },
-                    },
-                    {
-                        id: 'button',
-                        label: 'Şık Buton',
+                        id: 'pricing',
+                        label: '💰 Fiyat Tablosu',
                         category: 'Bileşenler',
-                        content: '<a href="#" style="display:inline-block; background:#2563eb; color:white; padding:10px 20px; border-radius:5px; text-decoration:none;">Tıkla</a>',
+                        content: `<div style="display: flex; gap: 20px; padding: 40px; justify-content: center; background: white;">
+                                    <div style="border: 1px solid #ddd; padding: 20px; border-radius: 10px; width: 200px; text-align: center;">
+                                        <h3>Başlangıç</h3>
+                                        <p style="font-size: 24px; font-weight: bold;">$0</p>
+                                        <ul style="list-style: none; padding: 0; font-size: 14px;"><li>1 Web Sitesi</li><li>Ücretsiz Domain</li></ul>
+                                    </div>
+                                    <div style="border: 2px solid #2563eb; padding: 20px; border-radius: 10px; width: 200px; text-align: center;">
+                                        <h3>Pro</h3>
+                                        <p style="font-size: 24px; font-weight: bold;">$29</p>
+                                        <ul style="list-style: none; padding: 0; font-size: 14px;"><li>Sınırsız Site</li><li>7/24 Destek</li></ul>
+                                    </div>
+                                  </div>`
                     },
                     {
-                        id: 'column-2',
-                        label: '2 Kolonlu Düzen',
-                        category: 'Düzen',
-                        content: `<div style="display: flex; gap: 20px; padding: 20px;">
-                                    <div style="flex: 1; min-height: 50px; border: 1px dashed #ccc;"></div>
-                                    <div style="flex: 1; min-height: 50px; border: 1px dashed #ccc;"></div>
-                                  </div>`,
+                        id: 'contact',
+                        label: '📧 İletişim Formu',
+                        category: 'Formlar',
+                        content: `<form style="padding: 30px; max-width: 400px; margin: auto; background: #f8fafc; border-radius: 10px;">
+                                    <label style="display: block; margin-bottom: 5px;">E-posta</label>
+                                    <input type="email" style="width: 100%; padding: 10px; margin-bottom: 15px; border: 1px solid #cbd5e1; border-radius: 5px;">
+                                    <label style="display: block; margin-bottom: 5px;">Mesajınız</label>
+                                    <textarea style="width: 100%; padding: 10px; border: 1px solid #cbd5e1; border-radius: 5px;"></textarea>
+                                    <button type="button" style="width: 100%; padding: 10px; background: #2563eb; color: white; border: none; border-radius: 5px; margin-top: 10px;">Gönder</button>
+                                  </form>`
                     },
                     {
-                        id: 'navbar-simple',
-                        label: 'Üst Menü',
-                        category: 'Bileşenler',
-                        content: `<nav style="display: flex; justify-content: space-between; padding: 20px; background: white; border-bottom: 1px solid #ddd;">
-                                    <div>Logo</div>
-                                    <div><a href="#">Ana Sayfa</a> | <a href="#">Hakkımızda</a></div>
-                                  </nav>`,
+                        id: 'text-block',
+                        label: '📝 Yazı Bloğu',
+                        category: 'Temel',
+                        content: '<div style="padding: 20px; line-height: 1.6;">Buraya uzun yazılarınızı ekleyebilirsiniz...</div>'
                     }
                 ]
             }
         });
 
-        function publish() {
+        editor.I18n.setLocale('tr');
+
+        function downloadSite() {
             const html = editor.getHtml();
             const css = editor.getCss();
-            const final = `<html><head><style>${css}</style></head><body>${html}</body></html>`;
-            const blob = new Blob([final], { type: 'text/html' });
+            const full = `<!DOCTYPE html><html><head><meta charset="UTF-8"><style>${css}</style></head><body>${html}</body></html>`;
+            const blob = new Blob([full], { type: 'text/html' });
             const a = document.createElement('a');
             a.href = URL.createObjectURL(blob);
-            a.download = 'site.html';
+            a.download = 'index.html';
             a.click();
         }
     </script>
