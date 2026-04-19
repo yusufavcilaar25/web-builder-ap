@@ -2,34 +2,36 @@
 <html lang="tr">
 <head>
     <meta charset="UTF-8">
-    <title>Yusuf Cloud Studio</title>
+    <title>Yusuf Cloud Studio | SaaS</title>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&family=Montserrat:wght@700&family=Playfair+Display&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="https://unpkg.com/grapesjs/dist/css/grapes.min.css">
     
     <style>
-        body, html { height: 100%; margin: 0; font-family: 'Poppins', sans-serif; background: #f8fafc; }
-        .editor-nav { height: 60px; background: white; display: flex; align-items: center; justify-content: space-between; padding: 0 30px; border-bottom: 1px solid #e2e8f0; }
-        .logo { font-family: 'Montserrat', sans-serif; font-weight: 700; color: #2563eb; }
-        .auth-btns button { border: none; padding: 8px 15px; border-radius: 6px; cursor: pointer; font-family: 'Poppins'; margin-left: 5px; }
-        .btn-login { background: #f1f5f9; }
-        .btn-reg { background: #2563eb; color: white; }
+        body, html { height: 100%; margin: 0; font-family: 'Poppins', sans-serif; background: #f1f5f9; }
+        .top-nav { height: 65px; background: white; display: flex; align-items: center; justify-content: space-between; padding: 0 30px; border-bottom: 1px solid #e2e8f0; }
+        .logo { font-weight: 700; color: #2563eb; font-family: 'Montserrat'; font-size: 1.3rem; }
         
-        /* GrapesJS Custom */
+        /* Giriş Paneli */
+        .auth-zone button { padding: 8px 16px; border-radius: 8px; border: 1px solid #ddd; cursor: pointer; font-family: 'Poppins'; }
+        .btn-reg { background: #2563eb; color: white; border: none !important; margin-left: 10px; }
+
         .gjs-one-bg { background-color: #ffffff !important; }
-        .gjs-cv-canvas { background-color: #f1f5f9 !important; }
-        
-        /* Font Seçici Bloğu İçin Stil */
-        .font-selector { padding: 10px; border: 1px solid #ddd; border-radius: 5px; width: 100%; }
+        .gjs-cv-canvas { background-color: #f8fafc !important; }
     </style>
 </head>
 <body>
 
-    <div class="editor-nav">
-        <div class="logo">YUSUF CLOUD STUDIO</div>
-        <div class="auth-btns" id="auth-section">
-            <button class="btn-login" onclick="showAuthModal('login')">Giriş Yap</button>
-            <button class="btn-reg" onclick="showAuthModal('register')">Kayıt Ol</button>
+    <div class="top-nav">
+        <div class="logo"><i class="fa-solid fa-cloud-bolt"></i> YUSUF STUDIO</div>
+        <div class="auth-zone">
+            {% if current_user.is_authenticated %}
+                <span>Hoş geldin, <b>{{ current_user.username }}</b></span>
+                <a href="/logout"><button>Çıkış Yap</button></a>
+            {% else %}
+                <button onclick="handleAuth('login')">Giriş Yap</button>
+                <button class="btn-reg" onclick="handleAuth('register')">Ücretsiz Başla</button>
+            {% endif %}
         </div>
     </div>
 
@@ -41,57 +43,61 @@
     <script>
         const editor = grapesjs.init({
             container: '#gjs',
-            height: 'calc(100vh - 60px)',
+            height: 'calc(100vh - 65px)',
+            // OTOMATİK KAYIT AYARI
             storageManager: {
                 type: 'remote',
-                stepsBeforeSave: 1, // Her 1 harekette bir otomatik kaydet
-                urlStore: '/save_project',
-                urlLoad: '/load_project',
+                stepsBeforeSave: 1, // Her bir değişiklikte kaydet
+                urlStore: '/auto-save',
+                urlLoad: '/load-site',
                 contentTypeJson: true,
             },
             plugins: ['gjs-preset-webpage'],
             blockManager: {
                 blocks: [
                     {
-                        id: 'icon-heart',
-                        label: '<i class="fa fa-heart"></i><br>Kalp Ikonu',
-                        category: 'Ikonlar',
-                        content: '<span style="font-size: 50px; color: red;"><i class="fa fa-heart"></i></span>'
+                        id: 'icon-block',
+                        label: '<i class="fa-solid fa-star"></i><br>Ikonlu Kart',
+                        category: 'Bileşenler',
+                        content: `<div style="padding:20px; text-align:center; border:1px solid #eee;">
+                                    <i class="fa-solid fa-rocket" style="font-size:3rem; color:#2563eb;"></i>
+                                    <h3>Harika Özellik</h3>
+                                  </div>`
                     },
                     {
                         id: 'font-changer',
-                        label: '<b>🔤 Font Değiştirici</b>',
+                        label: '<b>T</b> Dinamik Font Bloğu',
                         category: 'Bileşenler',
-                        content: `
-                            <div style="padding:20px; text-align:center;">
-                                <h2 style="font-family:inherit;">Fontu Değiştir</h2>
-                                <select onchange="this.parentElement.style.fontFamily = this.value" class="font-selector">
-                                    <option value="'Poppins', sans-serif">Modern (Poppins)</option>
-                                    <option value="'Playfair Display', serif">Klasik (Playfair)</option>
-                                    <option value="'Courier New', monospace">Kod (Courier)</option>
-                                    <option value="'Montserrat', sans-serif">Güçlü (Montserrat)</option>
-                                </select>
-                            </div>`
+                        content: `<div style="padding:20px;">
+                                    <h2 style="font-family:'Poppins';">Başlığı Değiştir</h2>
+                                    <select onchange="this.parentElement.style.fontFamily = this.value">
+                                        <option value="'Poppins'">Modern (Poppins)</option>
+                                        <option value="'Playfair Display'">Klasik (Playfair)</option>
+                                        <option value="'Montserrat'">Güçlü (Montserrat)</option>
+                                        <option value="serif">Geleneksel (Serif)</option>
+                                    </select>
+                                  </div>`
                     }
                 ]
             }
         });
 
-        // Giriş/Kayıt Fonksiyonları (Özet)
-        async function authAction(type, username, password) {
+        // Kullanıcı Giriş/Kayıt Simülasyonu
+        async function handleAuth(type) {
+            const user = prompt("Kullanıcı Adı:");
+            const pass = prompt("Şifre:");
+            if(!user || !pass) return;
+
             const res = await fetch('/' + type, {
                 method: 'POST',
                 headers: {'Content-Type': 'application/json'},
-                body: JSON.stringify({username, password})
+                body: JSON.stringify({username: user, password: pass})
             });
             if(res.ok) location.reload();
-            else alert("Hata oluştu!");
+            else alert("Hata: " + (await res.json()).message);
         }
 
-        // Tasarım Değiştiğinde Otomatik Kaydı Tetikle
-        editor.on('component:update', () => {
-            console.log("Değişiklik algılandı, kaydediliyor...");
-        });
+        editor.I18n.setLocale('tr');
     </script>
 </body>
 </html>

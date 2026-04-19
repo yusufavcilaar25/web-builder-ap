@@ -1,22 +1,24 @@
-from flask import Flask, render_template, request, jsonify, redirect, url_request, session
+from flask import Flask, render_template, request, jsonify, redirect, url_for, session
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import LoginManager, UserMixin, login_user, login_required, logout_user, current_user
 from werkzeug.security import generate_password_hash, check_password_hash
 import json
 
 app = Flask(__name__)
-app.config['SECRET_KEY'] = 'yusuf_secret_key_123'
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///builder.db'
+app.config['SECRET_KEY'] = 'yusuf_ozel_anahtar_123'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///yusuf_builder.db'
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+
 db = SQLAlchemy(app)
 login_manager = LoginManager(app)
-login_manager.login_view = 'login'
+login_manager.login_view = 'index'
 
-# Veritabanı Modelleri
+# --- Veritabanı Modeli ---
 class User(UserMixin, db.Model):
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(80), unique=True, nullable=False)
     password = db.Column(db.String(120), nullable=False)
-    project_data = db.Column(db.Text, nullable=True) # Kullanıcının sitesi burada saklanacak
+    site_data = db.Column(db.Text, nullable=True) # HTML/CSS/JSON verisi burada saklanacak
 
 @login_manager.user_loader
 def load_user(user_id):
@@ -30,10 +32,13 @@ def index():
 @app.route('/register', methods=['POST'])
 def register():
     data = request.get_json()
+    if User.query.filter_by(username=data['username']).first():
+        return jsonify({"message": "Bu kullanıcı zaten var"}), 400
     hashed_pw = generate_password_hash(data['password'])
     new_user = User(username=data['username'], password=hashed_pw)
     db.session.add(new_user)
     db.session.commit()
+    login_user(new_user)
     return jsonify({"success": True})
 
 @app.route('/login', methods=['POST'])
@@ -43,29 +48,26 @@ def login():
     if user and check_password_hash(user.password, data['password']):
         login_user(user)
         return jsonify({"success": True})
-    return jsonify({"success": False, "message": "Hatalı giriş"}), 401
+    return jsonify({"message": "Hatalı giriş"}), 401
 
 @app.route('/logout')
 def logout():
     logout_user()
-    return redirect('/')
+    return redirect(url_for('index'))
 
-# Otomatik Kayıt Rotası
-@app.route('/save_project', methods=['POST'])
+# OTOMATİK KAYIT NOKTASI
+@app.route('/auto-save', methods=['POST'])
 @login_required
-def save_project():
+def auto_save():
     data = request.get_json()
-    current_user.project_data = json.dumps(data)
+    current_user.site_data = json.dumps(data)
     db.session.commit()
-    return jsonify({"status": "success"})
+    return jsonify({"status": "Kaydedildi"})
 
-# Kayıtlı Veriyi Yükleme Rotası
-@app.route('/load_project')
+@app.route('/load-site')
 @login_required
-def load_project():
-    if current_user.project_data:
-        return jsonify(json.loads(current_user.project_data))
-    return jsonify({})
+def load_site():
+    return jsonify(json.loads(current_user.site_data)) if current_user.site_data else jsonify({})
 
 if __name__ == '__main__':
     with app.app_context():
