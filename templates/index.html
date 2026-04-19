@@ -2,84 +2,54 @@
 <html lang="tr">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Yusuf Studio | Elite Web Architect</title>
-    
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <title>Yusuf Elite Studio | SaaS Edition</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&family=Poppins:wght@400;700&family=Montserrat:wght@800&family=Playfair+Display:ital@1&family=Roboto+Mono&family=Lora&family=Oswald:wght@500&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    
     <link rel="stylesheet" href="https://unpkg.com/grapesjs/dist/css/grapes.min.css">
-    <link rel="stylesheet" href="https://unpkg.com/grapesjs-preset-webpage/dist/grapesjs-preset-webpage.min.css">
     
     <style>
-        :root {
-            --primary: #2563eb;
-            --dark-panel: #0f172a;
-            --border: #e2e8f0;
-        }
-
+        :root { --primary: #2563eb; --bg: #f8fafc; }
         body, html { height: 100%; margin: 0; font-family: 'Inter', sans-serif; overflow: hidden; }
-
-        /* Gelişmiş Navigasyon */
-        .studio-nav {
-            height: 60px;
-            background: rgba(255, 255, 255, 0.8);
-            backdrop-filter: blur(10px);
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding: 0 25px;
-            border-bottom: 1px solid var(--border);
-            z-index: 1000;
-            position: relative;
-        }
-
-        .brand { font-weight: 700; font-size: 1.2rem; color: var(--dark-panel); letter-spacing: -0.5px; }
-        .brand span { color: var(--primary); }
-
-        .toolbar { display: flex; gap: 10px; align-items: center; }
-
-        .t-btn {
-            background: #f1f5f9; border: none; padding: 8px 12px; border-radius: 6px;
-            cursor: pointer; font-size: 14px; font-weight: 500; transition: 0.2s;
-            display: flex; align-items: center; gap: 5px;
-        }
-
-        .t-btn:hover { background: #e2e8f0; }
-        .btn-save { background: var(--primary); color: white; }
-        .btn-save:hover { background: #1d4ed8; }
-
-        /* GrapesJS UI Özelleştirme */
-        .gjs-one-bg { background-color: #ffffff !important; }
-        .gjs-two-color { color: #475569 !important; }
-        .gjs-three-bg { background-color: var(--primary) !important; }
-        .gjs-four-color { color: var(--primary) !important; }
         
-        /* Sağ ve Sol Panel İyileştirmeleri */
-        .gjs-pn-panels { border-color: var(--border) !important; }
-        .gjs-pn-views-container { border-right: 1px solid var(--border) !important; }
-        .gjs-cv-canvas { background-color: #f8fafc !important; }
+        /* Navbar */
+        .navbar { height: 60px; background: white; border-bottom: 1px solid #e2e8f0; display: flex; align-items: center; justify-content: space-between; padding: 0 25px; z-index: 100; }
+        .logo { font-weight: 800; color: var(--primary); font-family: 'Montserrat'; font-size: 1.2rem; }
         
-        /* Blok Tasarımları */
-        .gjs-block {
-            border: 1px solid var(--border) !important;
-            border-radius: 8px !important;
-            padding: 15px !important;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.02) !important;
-        }
+        /* Auth Modal */
+        .modal { display: none; position: fixed; top:0; left:0; width:100%; height:100%; background: rgba(0,0,0,0.5); z-index: 2000; justify-content: center; align-items: center; }
+        .modal-content { background: white; padding: 30px; border-radius: 12px; width: 350px; box-shadow: 0 20px 25px -5px rgba(0,0,0,0.1); }
+        .modal-content h2 { margin-top: 0; font-family: 'Montserrat'; font-size: 1.2rem; }
+        .modal-content input { width: 100%; padding: 12px; margin: 10px 0; border: 1px solid #ddd; border-radius: 6px; box-sizing: border-box; }
+        .modal-btn { width: 100%; background: var(--primary); color: white; border: none; padding: 12px; border-radius: 6px; cursor: pointer; font-weight: 600; }
+
+        .auth-btn-group button { padding: 8px 16px; border-radius: 6px; border: 1px solid #ddd; cursor: pointer; font-weight: 500; margin-left: 5px; transition: 0.2s; }
+        .btn-reg { background: var(--primary); color: white; border: none !important; }
     </style>
 </head>
 <body>
 
-    <header class="studio-nav">
-        <div class="brand">YUSUF <span>STUDIO</span></div>
-        
-        <div class="toolbar">
-            <button class="t-btn" onclick="editor.runCommand('preview')"><i class="fa fa-eye"></i> Önizleme</button>
-            <button class="t-btn" onclick="editor.runCommand('canvas-clear')"><i class="fa fa-trash"></i> Temizle</button>
-            <button class="t-btn btn-save" onclick="saveNow()"><i class="fa fa-cloud-arrow-up"></i> Buluta Kaydet</button>
+    <nav class="navbar">
+        <div class="logo">YUSUF // STUDIO</div>
+        <div class="auth-btn-group">
+            {% if current_user.is_authenticated %}
+                <span style="margin-right:10px;">👋 {{ current_user.username }}</span>
+                <a href="/logout"><button>Çıkış</button></a>
+            {% else %}
+                <button onclick="openModal('login')">Giriş Yap</button>
+                <button class="btn-reg" onclick="openModal('register')">Kayıt Ol</button>
+            {% endif %}
         </div>
-    </header>
+    </nav>
+
+    <div id="authModal" class="modal">
+        <div class="modal-content">
+            <h2 id="modalTitle">Giriş Yap</h2>
+            <input type="text" id="username" placeholder="Kullanıcı Adı">
+            <input type="password" id="password" placeholder="Şifre">
+            <button class="modal-btn" onclick="submitAuth()">Onayla</button>
+            <button onclick="closeModal()" style="background:none; border:none; color:gray; width:100%; margin-top:10px; cursor:pointer;">İptal</button>
+        </div>
+    </div>
 
     <div id="gjs"></div>
 
@@ -87,6 +57,8 @@
     <script src="https://unpkg.com/grapesjs-preset-webpage"></script>
 
     <script>
+        let currentAuthMode = 'login';
+
         const editor = grapesjs.init({
             container: '#gjs',
             height: 'calc(100vh - 60px)',
@@ -97,43 +69,52 @@
                 urlLoad: '/load-site',
                 contentTypeJson: true,
             },
-            // Katmanlar ve Panelleri Türkçeleştir
-            i18n: {
-                locale: 'tr',
-                messages: {
-                    tr: {
-                        blockManager: { labels: { 'Sections': 'Bloklar', 'Basic': 'Temel' } },
-                        styleManager: { sectors: { 'general': 'Genel', 'layout': 'Yerleşim', 'typography': 'Yazı', 'decorations': 'Görünüm' } },
-                        layers: { label: 'Katmanlar' }
-                    }
-                }
-            },
             plugins: ['gjs-preset-webpage'],
-            pluginsOpts: {
-                'gjs-preset-webpage': {
-                    // Buraya özel eklenti ayarları gelebilir
-                }
+            blockManager: {
+                blocks: [
+                    {
+                        id: 'premium-hero',
+                        label: '<b>✨ Elite Hero</b>',
+                        category: 'Bölümler',
+                        content: `<section style="padding: 100px 5%; text-align: center; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white;">
+                                    <h1 style="font-family:'Montserrat'; font-size: 4rem; margin-bottom: 20px;">Geleceği Tasarla</h1>
+                                    <p style="font-family:'Inter'; font-size: 1.2rem; opacity: 0.9;">Sınırları zorlayan projeler için Yusuf Studio.</p>
+                                    <button style="margin-top:30px; padding:15px 40px; background:white; color:#764ba2; border:none; border-radius:50px; font-weight:700; cursor:pointer;">Keşfet</button>
+                                  </section>`
+                    },
+                    {
+                        id: 'font-showcase',
+                        label: '<b>🔠 Font Paketi</b>',
+                        category: 'Bileşenler',
+                        content: `<div style="padding:40px; border:1px solid #eee; text-align:center;">
+                                    <h2 style="font-family:'Playfair Display';">Sanatsal Başlık</h2>
+                                    <p style="font-family:'Roboto Mono';">Kod Yazı Tipi (Monospace)</p>
+                                    <p style="font-family:'Lora';">Zarif Kitap Yazı Tipi (Serif)</p>
+                                    <p style="font-family:'Oswald'; text-transform:uppercase;">Güçlü Başlık (Oswald)</p>
+                                  </div>`
+                    }
+                ]
             }
         });
 
-        // Üst Araç Çubuğuna Cihaz Seçicileri Ekle
-        editor.Panels.addPanel({
-            id: 'devices-c',
-            buttons: [
-                { id: 'set-device-desktop', command: 'set-device-desktop', className: 'fa fa-desktop', active: 1 },
-                { id: 'set-device-tablet', command: 'set-device-tablet', className: 'fa fa-tablet' },
-                { id: 'set-device-mobile', command: 'set-device-mobile', className: 'fa fa-mobile' }
-            ]
-        });
+        // MODAL YÖNETİMİ
+        function openModal(mode) {
+            currentAuthMode = mode;
+            document.getElementById('modalTitle').innerText = mode === 'login' ? 'Giriş Yap' : 'Kayıt Ol';
+            document.getElementById('authModal').style.display = 'flex';
+        }
+        function closeModal() { document.getElementById('authModal').style.display = 'none'; }
 
-        editor.Commands.add('set-device-desktop', { run: ed => ed.setDevice('Desktop') });
-        editor.Commands.add('set-device-tablet', { run: ed => ed.setDevice('Tablet') });
-        editor.Commands.add('set-device-mobile', { run: ed => ed.setDevice('Mobile') });
-
-        // Otomatik Kayıt Tetikleyici
-        function saveNow() {
-            editor.store();
-            alert("✅ Tasarımınız başarıyla veritabanına işlendi.");
+        async function submitAuth() {
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+            const res = await fetch('/' + currentAuthMode, {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({username, password})
+            });
+            if(res.ok) location.reload();
+            else alert("İşlem başarısız!");
         }
 
         editor.I18n.setLocale('tr');
