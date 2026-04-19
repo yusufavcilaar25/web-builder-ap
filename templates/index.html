@@ -1,83 +1,87 @@
-<!DOCTYPE html>
+<!<DOCTYPE html>
 <html lang="tr">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sürükle Bırak Web Oluşturucu</title>
-    
+    <title>Yusuf Web Builder Pro</title>
     <link rel="stylesheet" href="https://unpkg.com/grapesjs/dist/css/grapes.min.css">
     <script src="https://unpkg.com/grapesjs"></script>
-    <script src="https://unpkg.com/grapesjs-preset-webpage"></script>
-    
     <style>
-        body, html { margin: 0; height: 100%; overflow: hidden; font-family: sans-serif; }
-        #gjs { border: none; height: 100%; width: 100%; }
-        .top-bar { 
-            background-color: #2c3e50; 
-            color: white; 
-            padding: 10px 20px; 
-            display: flex; 
-            justify-content: space-between; 
-            align-items: center; 
-        }
+        body, html { height: 100%; margin: 0; }
+        #gjs { height: 0px; overflow: hidden; }
+        /* Panel ve Buton Stilleri */
+        .panel__devices { position: absolute; top: 10px; left: 50%; transform: translateX(-50%); z-index: 10; }
         .save-btn { 
-            background-color: #27ae60; 
-            color: white; 
-            border: none; 
-            padding: 8px 16px; 
-            border-radius: 4px; 
-            cursor: pointer; 
-            font-weight: bold;
+            position: absolute; top: 10px; right: 20px; z-index: 100;
+            background: #27ae60; color: white; border: none; padding: 10px 20px; 
+            border-radius: 5px; cursor: pointer; font-weight: bold;
         }
-        .save-btn:hover { background-color: #2ecc71; }
+        .save-btn:hover { background: #2ecc71; }
     </style>
 </head>
 <body>
 
-    <div class="top-bar">
-        <div>Site Oluşturucu Paneli</div>
-        <button class="save-btn" onclick="saveDesign()">Tasarımı Kaydet</button>
-    </div>
-
+    <div class="panel__devices"></div>
+    <button class="save-btn" onclick="saveContent()">💾 Tasarımı Kaydet & İndir</button>
     <div id="gjs"></div>
 
     <script>
-        // GrapesJS Editörünü Başlat
         const editor = grapesjs.init({
             container: '#gjs',
-            height: 'calc(100vh - 40px)', // Üst barın yüksekliğini düş
-            width: '100%',
+            fromElement: true,
+            height: '100vh',
+            width: 'auto',
+            storageManager: false, // Şimdilik yerel kayıt kapalı
+            blockManager: {
+                appendTo: '#blocks',
+                blocks: [
+                    {
+                        id: 'section', 
+                        label: '<b>Bölüm</b>', 
+                        attributes: { class: 'gjs-block-section' },
+                        content: `<section style="padding: 50px; text-align: center;"><h1>Yeni Bölüm</h1><p>Burası açıklama alanı...</p></section>`
+                    },
+                    {
+                        id: 'text',
+                        label: 'Metin',
+                        content: '<div data-gjs-type="text">Metninizi buraya yazın</div>',
+                    },
+                    {
+                        id: 'image',
+                        label: 'Resim',
+                        select: true,
+                        content: { type: 'image' },
+                        activate: true,
+                    }
+                ]
+            },
+            // Hazır blok setlerini (Navbar vb.) otomatik yüklemek için:
             plugins: ['gjs-preset-webpage'],
             pluginsOpts: {
-                'gjs-preset-webpage': {
-                    // Eklenti ayarları buraya eklenebilir
-                }
-            },
-            storageManager: false // Kendi kaydetme mantığımızı kullanacağız
+                'gjs-preset-webpage': {}
+            }
         });
 
-        // Tasarımı Backend'e Gönder
-        function saveDesign() {
+        // HTML İndirme ve Sunucuya Gönderme Fonksiyonu
+        function saveContent() {
             const html = editor.getHtml();
             const css = editor.getCss();
-            
+            const fullCode = `<html><head><style>${css}</style></head><body>${html}</body></html>`;
+
+            // 1. Sunucuya Gönder (Python'a)
             fetch('/save', {
                 method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
+                headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ html: html, css: css })
-            })
-            .then(response => response.json())
-            .then(data => {
-                alert(data.message);
-            })
-            .catch((error) => {
-                console.error('Hata:', error);
-                alert("Kaydetme işlemi başarısız oldu.");
-            });
+            }).then(res => alert("Sunucuya kaydedildi!"));
+
+            // 2. Dosya Olarak İndir (Senin seveceğin kısım)
+            const blob = new Blob([fullCode], { type: 'text/html' });
+            const a = document.createElement('a');
+            a.href = URL.createObjectURL(blob);
+            a.download = 'index.html';
+            a.click();
         }
     </script>
-
+    <script src="https://unpkg.com/grapesjs-preset-webpage"></script>
 </body>
 </html>
