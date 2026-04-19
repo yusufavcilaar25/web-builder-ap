@@ -2,62 +2,311 @@
 <html lang="tr">
 <head>
     <meta charset="UTF-8">
-    <title>Yusuf Studio | Force Load</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap" rel="stylesheet">
+    <title>Yusuf Studio | Pro Tasarım Editörü</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="https://unpkg.com/grapesjs/dist/css/grapes.min.css">
     <style>
-        body, html { height: 100%; margin: 0; overflow: hidden; font-family: 'Inter', sans-serif; }
-        #gjs { height: calc(100vh - 40px) !important; }
-        .top-bar { height: 40px; background: #1e293b; color: white; display: flex; align-items: center; padding: 0 20px; font-weight: bold; }
-        /* Panel renklerini zorla değiştiriyoruz */
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body, html { height: 100%; overflow: hidden; font-family: 'Inter', sans-serif; }
+        .top-bar {
+            height: 48px;
+            background: #0f172a;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 24px;
+            font-weight: 600;
+            border-bottom: 1px solid #334155;
+        }
+        .logo span { color: #38bdf8; }
+        .user-area button {
+            background: #1e293b;
+            border: none;
+            color: white;
+            padding: 6px 14px;
+            border-radius: 30px;
+            cursor: pointer;
+            margin-left: 10px;
+        }
+        #gjs { height: calc(100vh - 48px) !important; }
+        /* Blok paneli stilleri */
         .gjs-pn-views-container { border-left: 1px solid #334155 !important; background-color: #1e293b !important; }
-        .gjs-block { width: 100% !important; min-height: 80px !important; background: #334155 !important; color: white !important; border: 1px solid #475569 !important; }
+        .gjs-block {
+            width: 100% !important;
+            min-height: 80px !important;
+            background: #334155 !important;
+            color: white !important;
+            border: 1px solid #475569 !important;
+            border-radius: 8px;
+            margin-bottom: 8px;
+        }
+        .modal {
+            display: none;
+            position: fixed;
+            top:0; left:0; width:100%; height:100%;
+            background: rgba(0,0,0,0.7);
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+        .modal-card {
+            background: #1e293b;
+            padding: 32px;
+            border-radius: 24px;
+            width: 360px;
+            color: white;
+        }
+        .modal-card input {
+            width: 100%;
+            padding: 12px;
+            margin: 8px 0;
+            background: #0f172a;
+            border: 1px solid #475569;
+            border-radius: 12px;
+            color: white;
+        }
+        .modal-card button {
+            width: 100%;
+            margin-top: 16px;
+            background: #38bdf8;
+            border: none;
+            padding: 12px;
+            border-radius: 40px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+        .switch-mode {
+            text-align: center;
+            margin-top: 16px;
+            cursor: pointer;
+            color: #94a3b8;
+        }
+        .toast {
+            position: fixed;
+            bottom: 24px;
+            right: 24px;
+            background: #10b981;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 40px;
+            opacity: 0;
+            transition: 0.2s;
+            z-index: 999;
+        }
     </style>
 </head>
 <body>
 
-    <div class="top-bar">YUSUF STUDIO 2026 - TASARIM MODU</div>
-    <div id="gjs"></div>
+<div class="top-bar">
+    <div class="logo">YUSUF <span>STUDIO</span> 2026</div>
+    <div class="user-area">
+        <span id="username-display"></span>
+        <button id="logout-btn" style="display: none;">Çıkış Yap</button>
+        <button id="login-btn">Giriş / Kayıt</button>
+    </div>
+</div>
 
-    <script src="https://unpkg.com/grapesjs"></script>
-    <script>
-        const editor = grapesjs.init({
+<div id="gjs"></div>
+
+<!-- Auth Modal -->
+<div id="auth-modal" class="modal">
+    <div class="modal-card">
+        <h2 id="modal-title">Giriş Yap</h2>
+        <input type="text" id="auth-username" placeholder="Kullanıcı Adı">
+        <input type="password" id="auth-password" placeholder="Şifre">
+        <button id="submit-auth">Giriş Yap</button>
+        <div class="switch-mode" id="switch-mode">Hesabın yok mu? Kayıt ol</div>
+        <div id="auth-error" class="error-msg"></div>
+    </div>
+</div>
+
+<div id="toast" class="toast">Kaydedildi</div>
+
+<script src="https://unpkg.com/grapesjs"></script>
+<script>
+    let editor = null;
+    let isLoggedIn = false;
+    let currentUsername = "";
+    let authMode = "login";
+    let saveTimeout = null;
+
+    // DOM
+    const modal = document.getElementById('auth-modal');
+    const loginBtn = document.getElementById('login-btn');
+    const logoutBtn = document.getElementById('logout-btn');
+    const usernameSpan = document.getElementById('username-display');
+    const submitAuthBtn = document.getElementById('submit-auth');
+    const switchModeSpan = document.getElementById('switch-mode');
+    const modalTitle = document.getElementById('modal-title');
+    const authError = document.getElementById('auth-error');
+    const toastEl = document.getElementById('toast');
+
+    function showToast(msg) {
+        toastEl.textContent = msg;
+        toastEl.style.opacity = "1";
+        setTimeout(() => toastEl.style.opacity = "0", 2000);
+    }
+
+    function updateUIForLogin(username) {
+        isLoggedIn = true;
+        currentUsername = username;
+        usernameSpan.textContent = username;
+        loginBtn.style.display = "none";
+        logoutBtn.style.display = "inline-block";
+    }
+
+    function updateUIForLogout() {
+        isLoggedIn = false;
+        currentUsername = "";
+        usernameSpan.textContent = "";
+        loginBtn.style.display = "inline-block";
+        logoutBtn.style.display = "none";
+        if (editor) {
+            editor.setComponents('<div style="padding:80px;text-align:center;">Lütfen giriş yapın</div>');
+        }
+    }
+
+    async function loadDesignToEditor() {
+        if (!isLoggedIn) return;
+        try {
+            const res = await fetch('/api/load-site');
+            if (res.ok) {
+                const data = await res.json();
+                editor.loadData(data);
+            }
+        } catch(e) { console.error(e); }
+    }
+
+    function autoSave() {
+        if (!isLoggedIn || !editor) return;
+        const projectData = editor.getData();
+        fetch('/api/auto-save', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(projectData)
+        }).then(() => showToast("✅ Kaydedildi")).catch(() => showToast("❌ Hata"));
+    }
+
+    function debounceSave() {
+        if (saveTimeout) clearTimeout(saveTimeout);
+        saveTimeout = setTimeout(autoSave, 1000);
+    }
+
+    function initEditor() {
+        if (editor) editor.destroy();
+        editor = grapesjs.init({
             container: '#gjs',
-            fromElement: true,
             height: '100%',
-            storageManager: false, // Hata vermemesi için tamamen kapattım
-            blockManager: {
-                appendTo: '#gjs-blocks', // Blokları buraya zorla
-                blocks: [
+            storageManager: false,
+            panels: {
+                defaults: [
                     {
-                        id: 'section',
-                        label: '<b>Kutu Bölümü</b>',
-                        attributes: { class:'gjs-fonts gjs-f-b1' },
-                        content: `<section style="padding:50px; background:#fff; text-align:center;">
-                                    <h1>Başlık Buraya</h1>
-                                    <p>İçerik buraya...</p>
-                                  </section>`,
-                    },
-                    {
-                        id: 'text',
-                        label: 'Metin',
-                        content: '<div style="padding:10px;">Metin ekleyin...</div>',
-                    },
-                    {
-                        id: 'image',
-                        label: 'Resim',
-                        select: true,
-                        content: { type: 'image' },
+                        id: 'views',
+                        buttons: [
+                            { id: 'open-blocks', label: '<i class="fa fa-puzzle-piece"></i> Bloklar', active: true, command: 'open-blocks' }
+                        ]
                     }
+                ]
+            },
+            blockManager: {
+                appendTo: '.gjs-pn-views-container',  // Blokların sağ panele eklenmesini sağlar
+                blocks: [
+                    { id: 'hero', label: 'Hero Bölüm', content: '<section style="background:#0f172a; color:white; padding:80px 20px; text-align:center;"><h1>Büyük Başlık</h1><p>Alt metin</p><button style="background:#38bdf8; border:none; padding:12px 24px;">Başla</button></section>' },
+                    { id: 'card', label: 'Kart', content: '<div style="border:1px solid #e2e8f0; border-radius:20px; padding:20px;"><img src="https://placehold.co/300x200" style="width:100%; border-radius:12px;"><h3>Başlık</h3><p>Açıklama</p></div>' },
+                    { id: 'button', label: 'Buton', content: '<button style="background:#3b82f6; color:white; border:none; padding:10px 24px; border-radius:40px;">Tıkla</button>' },
+                    { id: 'navbar', label: 'Navbar', content: '<div style="display:flex; justify-content:space-between; padding:16px; background:#1e293b; color:white;"><div>Logo</div><div>Menü</div></div>' },
+                    { id: 'footer', label: 'Footer', content: '<footer style="background:#0f172a; color:#94a3b8; text-align:center; padding:30px;">© 2026 Tüm hakları saklıdır.</footer>' },
+                    { id: 'text', label: 'Metin', content: '<div style="padding:20px;">Yeni metin içeriği...</div>' }
                 ]
             }
         });
 
-        // Blok panelini sağda zorla açan komut
+        // Sağdaki blok panelini otomatik aç
         editor.on('load', () => {
-            editor.Panels.getButton('views', 'open-blocks').set('active', true);
+            const openBtn = editor.Panels.getButton('views', 'open-blocks');
+            if (openBtn) openBtn.set('active', true);
         });
-    </script>
+
+        editor.on('component:update', debounceSave);
+        editor.on('style:update', debounceSave);
+
+        if (!isLoggedIn) {
+            editor.setComponents('<div style="padding:80px;text-align:center;"><h2>Hoş Geldiniz</h2><p>Tasarıma başlamak için giriş yapın</p></div>');
+        }
+    }
+
+    // Auth işlemleri (öncekiyle aynı)
+    async function checkSession() {
+        try {
+            const res = await fetch('/api/user');
+            if (res.ok) {
+                const data = await res.json();
+                updateUIForLogin(data.username);
+                initEditor();
+                await loadDesignToEditor();
+            } else {
+                updateUIForLogout();
+                initEditor();
+            }
+        } catch(e) {
+            updateUIForLogout();
+            initEditor();
+        }
+    }
+
+    function openModal() {
+        modal.style.display = "flex";
+        authError.innerText = "";
+        document.getElementById('auth-username').value = "";
+        document.getElementById('auth-password').value = "";
+    }
+    function closeModal() { modal.style.display = "none"; }
+
+    async function handleAuth() {
+        const username = document.getElementById('auth-username').value.trim();
+        const password = document.getElementById('auth-password').value;
+        if (!username || !password) { authError.innerText = "Tüm alanları doldurun"; return; }
+        const endpoint = authMode === "login" ? "/api/login" : "/api/register";
+        try {
+            const res = await fetch(endpoint, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ username, password })
+            });
+            const data = await res.json();
+            if (res.ok) {
+                closeModal();
+                updateUIForLogin(username);
+                initEditor();  // yeniden başlat
+                await loadDesignToEditor();
+                showToast(`Hoş geldin ${username}`);
+            } else {
+                authError.innerText = data.message || "Hata";
+            }
+        } catch(err) { authError.innerText = "Sunucu hatası"; }
+    }
+
+    async function logout() {
+        await fetch('/api/logout', { method: 'POST' }).catch(()=>{});
+        updateUIForLogout();
+        initEditor();
+        showToast("Çıkış yapıldı");
+    }
+
+    loginBtn.onclick = () => { authMode = "login"; modalTitle.innerText = "Giriş Yap"; switchModeSpan.innerText = "Hesabın yok mu? Kayıt ol"; openModal(); };
+    logoutBtn.onclick = logout;
+    submitAuthBtn.onclick = handleAuth;
+    switchModeSpan.onclick = () => {
+        authMode = (authMode === "login") ? "register" : "login";
+        modalTitle.innerText = authMode === "login" ? "Giriş Yap" : "Kayıt Ol";
+        switchModeSpan.innerText = authMode === "login" ? "Hesabın yok mu? Kayıt ol" : "Zaten hesabın var mı? Giriş yap";
+        authError.innerText = "";
+    };
+    modal.addEventListener('click', (e) => { if(e.target === modal) closeModal(); });
+
+    checkSession();
+</script>
 </body>
 </html>
