@@ -2,46 +2,36 @@
 <html lang="tr">
 <head>
     <meta charset="UTF-8">
-    <title>Yusuf Builder | Advanced Studio</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <title>Yusuf Cloud Studio</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&family=Montserrat:wght@700&family=Playfair+Display&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="https://unpkg.com/grapesjs/dist/css/grapes.min.css">
-    <link rel="stylesheet" href="https://unpkg.com/grapesjs-preset-webpage/dist/grapesjs-preset-webpage.min.css">
+    
     <style>
-        :root { --primary: #2563eb; --border: #e2e8f0; }
-        body, html { height: 100%; margin: 0; font-family: 'Inter', sans-serif; overflow: hidden; }
+        body, html { height: 100%; margin: 0; font-family: 'Poppins', sans-serif; background: #f8fafc; }
+        .editor-nav { height: 60px; background: white; display: flex; align-items: center; justify-content: space-between; padding: 0 30px; border-bottom: 1px solid #e2e8f0; }
+        .logo { font-family: 'Montserrat', sans-serif; font-weight: 700; color: #2563eb; }
+        .auth-btns button { border: none; padding: 8px 15px; border-radius: 6px; cursor: pointer; font-family: 'Poppins'; margin-left: 5px; }
+        .btn-login { background: #f1f5f9; }
+        .btn-reg { background: #2563eb; color: white; }
         
-        /* Header ve Toolbar */
-        .app-header {
-            height: 55px; background: white; border-bottom: 1px solid var(--border);
-            display: flex; align-items: center; justify-content: space-between; padding: 0 20px;
-        }
-        .device-switches { display: flex; gap: 10px; background: #f1f5f9; padding: 5px; border-radius: 8px; }
-        .device-btn { border: none; background: transparent; cursor: pointer; padding: 5px 10px; font-size: 18px; border-radius: 4px; }
-        .device-btn:hover { background: white; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
-        
-        .brand-name { font-weight: 700; color: #1e293b; font-size: 1.2rem; }
-        .publish-btn { background: var(--primary); color: white; border: none; padding: 8px 20px; border-radius: 6px; font-weight: 500; cursor: pointer; }
-
-        /* GrapesJS Customization */
+        /* GrapesJS Custom */
         .gjs-one-bg { background-color: #ffffff !important; }
-        .gjs-two-color { color: #475569 !important; }
-        .gjs-three-bg { background-color: var(--primary) !important; }
-        .gjs-cv-canvas { background-color: #f8fafc !important; }
+        .gjs-cv-canvas { background-color: #f1f5f9 !important; }
+        
+        /* Font Seçici Bloğu İçin Stil */
+        .font-selector { padding: 10px; border: 1px solid #ddd; border-radius: 5px; width: 100%; }
     </style>
 </head>
 <body>
 
-    <header class="app-header">
-        <div class="brand-name">YUSUF STUDIO</div>
-        
-        <div class="device-switches">
-            <button class="device-btn" onclick="editor.setDevice('Desktop')">🖥️</button>
-            <button class="device-btn" onclick="editor.setDevice('Tablet')">📱</button>
-            <button class="device-btn" onclick="editor.setDevice('Mobile')">🤳</button>
+    <div class="editor-nav">
+        <div class="logo">YUSUF CLOUD STUDIO</div>
+        <div class="auth-btns" id="auth-section">
+            <button class="btn-login" onclick="showAuthModal('login')">Giriş Yap</button>
+            <button class="btn-reg" onclick="showAuthModal('register')">Kayıt Ol</button>
         </div>
-
-        <button class="publish-btn" onclick="exportHTML()">Projeyi Çıkar</button>
-    </header>
+    </div>
 
     <div id="gjs"></div>
 
@@ -51,69 +41,57 @@
     <script>
         const editor = grapesjs.init({
             container: '#gjs',
-            height: 'calc(100vh - 55px)',
-            storageManager: false,
-            deviceManager: {
-                devices: [
-                    { name: 'Desktop', width: '' },
-                    { name: 'Tablet', width: '768px', widthMedia: '992px' },
-                    { name: 'Mobile', width: '320px', widthMedia: '480px' }
-                ]
+            height: 'calc(100vh - 60px)',
+            storageManager: {
+                type: 'remote',
+                stepsBeforeSave: 1, // Her 1 harekette bir otomatik kaydet
+                urlStore: '/save_project',
+                urlLoad: '/load_project',
+                contentTypeJson: true,
             },
             plugins: ['gjs-preset-webpage'],
             blockManager: {
                 blocks: [
                     {
-                        id: 'feature-grid',
-                        label: '✨ Özellikler Kartı',
-                        category: 'Bölümler',
-                        content: `<div style="display: flex; flex-wrap: wrap; padding: 50px; justify-content: space-around; background: white;">
-                                    <div style="width: 30%; text-align: center; padding: 20px; border: 1px solid #eee; border-radius: 10px;">
-                                        <h3>Hızlı</h3><p>Işık hızında performans sunuyoruz.</p>
-                                    </div>
-                                    <div style="width: 30%; text-align: center; padding: 20px; border: 1px solid #eee; border-radius: 10px;">
-                                        <h3>Güvenli</h3><p>Verileriniz bizimle tamamen güvende.</p>
-                                    </div>
-                                    <div style="width: 30%; text-align: center; padding: 20px; border: 1px solid #eee; border-radius: 10px;">
-                                        <h3>Modern</h3><p>En güncel teknolojileri kullanıyoruz.</p>
-                                    </div>
-                                  </div>`
+                        id: 'icon-heart',
+                        label: '<i class="fa fa-heart"></i><br>Kalp Ikonu',
+                        category: 'Ikonlar',
+                        content: '<span style="font-size: 50px; color: red;"><i class="fa fa-heart"></i></span>'
                     },
                     {
-                        id: 'footer-pro',
-                        label: '📄 Profesyonel Footer',
+                        id: 'font-changer',
+                        label: '<b>🔤 Font Değiştirici</b>',
                         category: 'Bileşenler',
-                        content: `<footer style="padding: 40px; background: #0f172a; color: white; display: flex; justify-content: space-between;">
-                                    <div><strong>Yusuf Studio</strong><br>Modern Web Co.</div>
-                                    <div><a href="#" style="color: white;">Hakkımızda</a><br><a href="#" style="color: white;">İletişim</a></div>
-                                    <div>© 2026 Tüm Hakları Saklıdır.</div>
-                                  </footer>`
-                    },
-                    {
-                        id: 'cta-section',
-                        label: '📢 Harekete Geç (CTA)',
-                        category: 'Bileşenler',
-                        content: `<div style="padding: 60px; text-align: center; background: #2563eb; color: white;">
-                                    <h2>Hala Bekliyor Musunuz?</h2>
-                                    <button style="background: white; color: #2563eb; border: none; padding: 12px 30px; border-radius: 5px; font-weight: bold; margin-top: 15px;">Şimdi Kaydol</button>
-                                  </div>`
+                        content: `
+                            <div style="padding:20px; text-align:center;">
+                                <h2 style="font-family:inherit;">Fontu Değiştir</h2>
+                                <select onchange="this.parentElement.style.fontFamily = this.value" class="font-selector">
+                                    <option value="'Poppins', sans-serif">Modern (Poppins)</option>
+                                    <option value="'Playfair Display', serif">Klasik (Playfair)</option>
+                                    <option value="'Courier New', monospace">Kod (Courier)</option>
+                                    <option value="'Montserrat', sans-serif">Güçlü (Montserrat)</option>
+                                </select>
+                            </div>`
                     }
                 ]
             }
         });
 
-        // Türkçeleştirme ve UI Ayarları
-        editor.I18n.setLocale('tr');
-        
-        function exportHTML() {
-            const code = `<!DOCTYPE html><html><head><style>${editor.getCss()}</style></head><body>${editor.getHtml()}</body></html>`;
-            const blob = new Blob([code], { type: 'text/html' });
-            const a = document.createElement('a');
-            a.href = URL.createObjectURL(blob);
-            a.download = 'yusuf-proje.html';
-            a.click();
-            alert("Tasarım başarıyla dışa aktarıldı!");
+        // Giriş/Kayıt Fonksiyonları (Özet)
+        async function authAction(type, username, password) {
+            const res = await fetch('/' + type, {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({username, password})
+            });
+            if(res.ok) location.reload();
+            else alert("Hata oluştu!");
         }
+
+        // Tasarım Değiştiğinde Otomatik Kaydı Tetikle
+        editor.on('component:update', () => {
+            console.log("Değişiklik algılandı, kaydediliyor...");
+        });
     </script>
 </body>
 </html>
