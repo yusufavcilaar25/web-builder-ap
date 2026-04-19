@@ -70,31 +70,46 @@
                 contentTypeJson: true,
             },
             plugins: ['gjs-preset-webpage'],
-            blockManager: {
-                blocks: [
-                    {
-                        id: 'premium-hero',
-                        label: '<b>✨ Elite Hero</b>',
-                        category: 'Bölümler',
-                        content: `<section style="padding: 100px 5%; text-align: center; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white;">
-                                    <h1 style="font-family:'Montserrat'; font-size: 4rem; margin-bottom: 20px;">Geleceği Tasarla</h1>
-                                    <p style="font-family:'Inter'; font-size: 1.2rem; opacity: 0.9;">Sınırları zorlayan projeler için Yusuf Studio.</p>
-                                    <button style="margin-top:30px; padding:15px 40px; background:white; color:#764ba2; border:none; border-radius:50px; font-weight:700; cursor:pointer;">Keşfet</button>
-                                  </section>`
-                    },
-                    {
-                        id: 'font-showcase',
-                        label: '<b>🔠 Font Paketi</b>',
-                        category: 'Bileşenler',
-                        content: `<div style="padding:40px; border:1px solid #eee; text-align:center;">
-                                    <h2 style="font-family:'Playfair Display';">Sanatsal Başlık</h2>
-                                    <p style="font-family:'Roboto Mono';">Kod Yazı Tipi (Monospace)</p>
-                                    <p style="font-family:'Lora';">Zarif Kitap Yazı Tipi (Serif)</p>
-                                    <p style="font-family:'Oswald'; text-transform:uppercase;">Güçlü Başlık (Oswald)</p>
-                                  </div>`
-                    }
-                ]
-            }
+            // ... önceki kodların devamı ...
+blockManager: {
+    blocks: [
+        {
+            id: 'video-hero',
+            label: '<i class="fa fa-play-circle"></i><br>Video Bölümü',
+            category: 'Bölümler',
+            content: `<section style="padding:100px 0; background:#000; color:white; text-align:center;">
+                        <h2 style="margin-bottom:20px;">Tanıtım Videomuz</h2>
+                        <iframe width="560" height="315" src="https://www.youtube.com/embed/dQw4w9WgXcQ" frameborder="0" allowfullscreen></iframe>
+                      </section>`
+        },
+        {
+            id: 'team-section',
+            label: '<i class="fa fa-users"></i><br>Ekip Kartları',
+            category: 'Bileşenler',
+            content: `<div style="display:flex; gap:20px; padding:50px; justify-content:center;">
+                        <div style="text-align:center; flex:1;">
+                            <div style="width:100px; height:100px; background:#ddd; border-radius:50%; margin:auto;"></div>
+                            <h4>Yusuf Arda</h4><p>Lead Developer</p>
+                        </div>
+                        <div style="text-align:center; flex:1;">
+                            <div style="width:100px; height:100px; background:#ddd; border-radius:50%; margin:auto;"></div>
+                            <h4>Zeynep Kaya</h4><p>UI/UX Designer</p>
+                        </div>
+                      </div>`
+        },
+        {
+            id: 'gallery-grid',
+            label: '<i class="fa fa-images"></i><br>Resim Galerisi',
+            category: 'Bileşenler',
+            content: `<div style="display:grid; grid-template-columns:repeat(3, 1fr); gap:10px; padding:20px;">
+                        <div style="background:#eee; height:200px;"></div>
+                        <div style="background:#eee; height:200px;"></div>
+                        <div style="background:#eee; height:200px;"></div>
+                      </div>`
+        },
+        // Daha önceki Hero, Pricing ve Footer bloklarını da burada tutmaya devam et...
+    ]
+}
         });
 
         // MODAL YÖNETİMİ
