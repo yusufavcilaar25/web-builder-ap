@@ -31,7 +31,6 @@
             margin-left: 10px;
         }
         #gjs { height: calc(100vh - 48px) !important; }
-        /* Blok paneli stilleri */
         .gjs-pn-views-container { border-left: 1px solid #334155 !important; background-color: #1e293b !important; }
         .gjs-block {
             width: 100% !important;
@@ -95,6 +94,7 @@
             transition: 0.2s;
             z-index: 999;
         }
+        .error-msg { color: #f87171; font-size: 0.8rem; margin-top: 8px; text-align: center; }
     </style>
 </head>
 <body>
@@ -175,8 +175,12 @@
             if (res.ok) {
                 const data = await res.json();
                 editor.loadData(data);
+            } else {
+                console.warn("Yükleme hatası", res.status);
             }
-        } catch(e) { console.error(e); }
+        } catch(e) {
+            console.warn("Yükleme hatası", e);
+        }
     }
 
     function autoSave() {
@@ -186,7 +190,10 @@
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(projectData)
-        }).then(() => showToast("✅ Kaydedildi")).catch(() => showToast("❌ Hata"));
+        }).then(res => {
+            if (res.ok) showToast("✅ Kaydedildi");
+            else showToast("❌ Kayıt hatası");
+        }).catch(() => showToast("❌ Hata"));
     }
 
     function debounceSave() {
@@ -200,18 +207,7 @@
             container: '#gjs',
             height: '100%',
             storageManager: false,
-            panels: {
-                defaults: [
-                    {
-                        id: 'views',
-                        buttons: [
-                            { id: 'open-blocks', label: '<i class="fa fa-puzzle-piece"></i> Bloklar', active: true, command: 'open-blocks' }
-                        ]
-                    }
-                ]
-            },
             blockManager: {
-                appendTo: '.gjs-pn-views-container',  // Blokların sağ panele eklenmesini sağlar
                 blocks: [
                     { id: 'hero', label: 'Hero Bölüm', content: '<section style="background:#0f172a; color:white; padding:80px 20px; text-align:center;"><h1>Büyük Başlık</h1><p>Alt metin</p><button style="background:#38bdf8; border:none; padding:12px 24px;">Başla</button></section>' },
                     { id: 'card', label: 'Kart', content: '<div style="border:1px solid #e2e8f0; border-radius:20px; padding:20px;"><img src="https://placehold.co/300x200" style="width:100%; border-radius:12px;"><h3>Başlık</h3><p>Açıklama</p></div>' },
@@ -223,10 +219,10 @@
             }
         });
 
-        // Sağdaki blok panelini otomatik aç
+        // Blok panelini otomatik aç
         editor.on('load', () => {
-            const openBtn = editor.Panels.getButton('views', 'open-blocks');
-            if (openBtn) openBtn.set('active', true);
+            const blocksBtn = editor.Panels.getButton('views', 'open-blocks');
+            if (blocksBtn) blocksBtn.set('active', true);
         });
 
         editor.on('component:update', debounceSave);
@@ -237,7 +233,6 @@
         }
     }
 
-    // Auth işlemleri (öncekiyle aynı)
     async function checkSession() {
         try {
             const res = await fetch('/api/user');
@@ -279,17 +274,21 @@
             if (res.ok) {
                 closeModal();
                 updateUIForLogin(username);
-                initEditor();  // yeniden başlat
+                initEditor();
                 await loadDesignToEditor();
                 showToast(`Hoş geldin ${username}`);
             } else {
                 authError.innerText = data.message || "Hata";
             }
-        } catch(err) { authError.innerText = "Sunucu hatası"; }
+        } catch(err) {
+            authError.innerText = "Sunucu hatası";
+        }
     }
 
     async function logout() {
-        await fetch('/api/logout', { method: 'POST' }).catch(()=>{});
+        try {
+            await fetch('/api/logout', { method: 'POST' });
+        } catch(e) {}
         updateUIForLogout();
         initEditor();
         showToast("Çıkış yapıldı");
