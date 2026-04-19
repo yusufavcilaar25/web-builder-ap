@@ -2,29 +2,46 @@
 <html lang="tr">
 <head>
     <meta charset="UTF-8">
-    <title>Yusuf Pro Builder | Element Edition</title>
+    <title>Yusuf Builder | Advanced Studio</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://unpkg.com/grapesjs/dist/css/grapes.min.css">
     <link rel="stylesheet" href="https://unpkg.com/grapesjs-preset-webpage/dist/grapesjs-preset-webpage.min.css">
     <style>
-        body, html { height: 100%; margin: 0; font-family: 'Inter', sans-serif; background: #f1f5f9; }
-        .top-bar { height: 60px; background: white; display: flex; align-items: center; justify-content: space-between; padding: 0 25px; border-bottom: 1px solid #e2e8f0; position: relative; z-index: 100; }
-        .logo { font-weight: 700; color: #1e293b; letter-spacing: -1px; }
-        .btn-push { background: #2563eb; color: white; border: none; padding: 10px 20px; border-radius: 8px; cursor: pointer; font-weight: 600; transition: 0.2s; }
-        .btn-push:hover { background: #1d4ed8; }
+        :root { --primary: #2563eb; --border: #e2e8f0; }
+        body, html { height: 100%; margin: 0; font-family: 'Inter', sans-serif; overflow: hidden; }
         
-        /* Editör Paneli Düzenlemesi */
-        .gjs-cv-canvas { background-color: #f1f5f9 !important; }
-        .gjs-block { width: 100% !important; min-height: 90px !important; border-radius: 6px !important; border: 1px solid #e2e8f0 !important; transition: 0.2s; background: white !important; }
-        .gjs-block:hover { border-color: #2563eb !important; box-shadow: 0 4px 12px rgba(0,0,0,0.05); }
+        /* Header ve Toolbar */
+        .app-header {
+            height: 55px; background: white; border-bottom: 1px solid var(--border);
+            display: flex; align-items: center; justify-content: space-between; padding: 0 20px;
+        }
+        .device-switches { display: flex; gap: 10px; background: #f1f5f9; padding: 5px; border-radius: 8px; }
+        .device-btn { border: none; background: transparent; cursor: pointer; padding: 5px 10px; font-size: 18px; border-radius: 4px; }
+        .device-btn:hover { background: white; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
+        
+        .brand-name { font-weight: 700; color: #1e293b; font-size: 1.2rem; }
+        .publish-btn { background: var(--primary); color: white; border: none; padding: 8px 20px; border-radius: 6px; font-weight: 500; cursor: pointer; }
+
+        /* GrapesJS Customization */
+        .gjs-one-bg { background-color: #ffffff !important; }
+        .gjs-two-color { color: #475569 !important; }
+        .gjs-three-bg { background-color: var(--primary) !important; }
+        .gjs-cv-canvas { background-color: #f8fafc !important; }
     </style>
 </head>
 <body>
 
-    <div class="top-bar">
-        <div class="logo">YUSUF STUDIO V3</div>
-        <button class="btn-push" onclick="downloadSite()">SİTEYİ İNDİR</button>
-    </div>
+    <header class="app-header">
+        <div class="brand-name">YUSUF STUDIO</div>
+        
+        <div class="device-switches">
+            <button class="device-btn" onclick="editor.setDevice('Desktop')">🖥️</button>
+            <button class="device-btn" onclick="editor.setDevice('Tablet')">📱</button>
+            <button class="device-btn" onclick="editor.setDevice('Mobile')">🤳</button>
+        </div>
+
+        <button class="publish-btn" onclick="exportHTML()">Projeyi Çıkar</button>
+    </header>
 
     <div id="gjs"></div>
 
@@ -34,72 +51,68 @@
     <script>
         const editor = grapesjs.init({
             container: '#gjs',
-            height: 'calc(100vh - 60px)',
+            height: 'calc(100vh - 55px)',
             storageManager: false,
-            i18n: { locale: 'tr' },
+            deviceManager: {
+                devices: [
+                    { name: 'Desktop', width: '' },
+                    { name: 'Tablet', width: '768px', widthMedia: '992px' },
+                    { name: 'Mobile', width: '320px', widthMedia: '480px' }
+                ]
+            },
             plugins: ['gjs-preset-webpage'],
             blockManager: {
                 blocks: [
                     {
-                        id: 'hero-sec',
-                        label: '🚀 Dev Başlık (Hero)',
+                        id: 'feature-grid',
+                        label: '✨ Özellikler Kartı',
                         category: 'Bölümler',
-                        content: `<section style="padding: 80px 20px; text-align: center; background: #1e293b; color: white;">
-                                    <h1 style="font-size: 3rem;">Geleceği İnşa Edin</h1>
-                                    <p style="font-size: 1.2rem; opacity: 0.8;">Hızlı, güvenilir ve modern web çözümleri.</p>
-                                    <button style="padding: 15px 30px; background: #2563eb; border: none; color: white; border-radius: 5px; margin-top: 20px;">Hemen Başla</button>
-                                  </section>`
-                    },
-                    {
-                        id: 'pricing',
-                        label: '💰 Fiyat Tablosu',
-                        category: 'Bileşenler',
-                        content: `<div style="display: flex; gap: 20px; padding: 40px; justify-content: center; background: white;">
-                                    <div style="border: 1px solid #ddd; padding: 20px; border-radius: 10px; width: 200px; text-align: center;">
-                                        <h3>Başlangıç</h3>
-                                        <p style="font-size: 24px; font-weight: bold;">$0</p>
-                                        <ul style="list-style: none; padding: 0; font-size: 14px;"><li>1 Web Sitesi</li><li>Ücretsiz Domain</li></ul>
+                        content: `<div style="display: flex; flex-wrap: wrap; padding: 50px; justify-content: space-around; background: white;">
+                                    <div style="width: 30%; text-align: center; padding: 20px; border: 1px solid #eee; border-radius: 10px;">
+                                        <h3>Hızlı</h3><p>Işık hızında performans sunuyoruz.</p>
                                     </div>
-                                    <div style="border: 2px solid #2563eb; padding: 20px; border-radius: 10px; width: 200px; text-align: center;">
-                                        <h3>Pro</h3>
-                                        <p style="font-size: 24px; font-weight: bold;">$29</p>
-                                        <ul style="list-style: none; padding: 0; font-size: 14px;"><li>Sınırsız Site</li><li>7/24 Destek</li></ul>
+                                    <div style="width: 30%; text-align: center; padding: 20px; border: 1px solid #eee; border-radius: 10px;">
+                                        <h3>Güvenli</h3><p>Verileriniz bizimle tamamen güvende.</p>
+                                    </div>
+                                    <div style="width: 30%; text-align: center; padding: 20px; border: 1px solid #eee; border-radius: 10px;">
+                                        <h3>Modern</h3><p>En güncel teknolojileri kullanıyoruz.</p>
                                     </div>
                                   </div>`
                     },
                     {
-                        id: 'contact',
-                        label: '📧 İletişim Formu',
-                        category: 'Formlar',
-                        content: `<form style="padding: 30px; max-width: 400px; margin: auto; background: #f8fafc; border-radius: 10px;">
-                                    <label style="display: block; margin-bottom: 5px;">E-posta</label>
-                                    <input type="email" style="width: 100%; padding: 10px; margin-bottom: 15px; border: 1px solid #cbd5e1; border-radius: 5px;">
-                                    <label style="display: block; margin-bottom: 5px;">Mesajınız</label>
-                                    <textarea style="width: 100%; padding: 10px; border: 1px solid #cbd5e1; border-radius: 5px;"></textarea>
-                                    <button type="button" style="width: 100%; padding: 10px; background: #2563eb; color: white; border: none; border-radius: 5px; margin-top: 10px;">Gönder</button>
-                                  </form>`
+                        id: 'footer-pro',
+                        label: '📄 Profesyonel Footer',
+                        category: 'Bileşenler',
+                        content: `<footer style="padding: 40px; background: #0f172a; color: white; display: flex; justify-content: space-between;">
+                                    <div><strong>Yusuf Studio</strong><br>Modern Web Co.</div>
+                                    <div><a href="#" style="color: white;">Hakkımızda</a><br><a href="#" style="color: white;">İletişim</a></div>
+                                    <div>© 2026 Tüm Hakları Saklıdır.</div>
+                                  </footer>`
                     },
                     {
-                        id: 'text-block',
-                        label: '📝 Yazı Bloğu',
-                        category: 'Temel',
-                        content: '<div style="padding: 20px; line-height: 1.6;">Buraya uzun yazılarınızı ekleyebilirsiniz...</div>'
+                        id: 'cta-section',
+                        label: '📢 Harekete Geç (CTA)',
+                        category: 'Bileşenler',
+                        content: `<div style="padding: 60px; text-align: center; background: #2563eb; color: white;">
+                                    <h2>Hala Bekliyor Musunuz?</h2>
+                                    <button style="background: white; color: #2563eb; border: none; padding: 12px 30px; border-radius: 5px; font-weight: bold; margin-top: 15px;">Şimdi Kaydol</button>
+                                  </div>`
                     }
                 ]
             }
         });
 
+        // Türkçeleştirme ve UI Ayarları
         editor.I18n.setLocale('tr');
-
-        function downloadSite() {
-            const html = editor.getHtml();
-            const css = editor.getCss();
-            const full = `<!DOCTYPE html><html><head><meta charset="UTF-8"><style>${css}</style></head><body>${html}</body></html>`;
-            const blob = new Blob([full], { type: 'text/html' });
+        
+        function exportHTML() {
+            const code = `<!DOCTYPE html><html><head><style>${editor.getCss()}</style></head><body>${editor.getHtml()}</body></html>`;
+            const blob = new Blob([code], { type: 'text/html' });
             const a = document.createElement('a');
             a.href = URL.createObjectURL(blob);
-            a.download = 'index.html';
+            a.download = 'yusuf-proje.html';
             a.click();
+            alert("Tasarım başarıyla dışa aktarıldı!");
         }
     </script>
 </body>
