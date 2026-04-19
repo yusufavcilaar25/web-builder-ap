@@ -2,63 +2,43 @@
 <html lang="tr">
 <head>
     <meta charset="UTF-8">
-    <title>Yusuf Studio | Pro Web Builder</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
+    <title>Yusuf Studio | Pro Architect</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="https://unpkg.com/grapesjs/dist/css/grapes.min.css">
     <style>
-        :root { --primary: #2563eb; --dark: #0f172a; }
-        body, html { height: 100%; margin: 0; font-family: 'Inter', sans-serif; overflow: hidden; background: #f1f5f9; }
+        :root { --primary: #3b82f6; --dark: #0f172a; }
+        body, html { height: 100%; margin: 0; font-family: 'Inter', sans-serif; overflow: hidden; }
         
-        /* Navigasyon */
-        .nav-header { height: 60px; background: white; border-bottom: 1px solid #e2e8f0; display: flex; align-items: center; justify-content: space-between; padding: 0 20px; z-index: 1000; position: relative; }
-        .logo { font-weight: 800; font-size: 1.2rem; color: var(--dark); }
-        .logo span { color: var(--primary); }
-
-        /* Butonlar */
-        .btn { padding: 8px 16px; border-radius: 6px; font-weight: 600; cursor: pointer; border: 1px solid #ddd; transition: 0.2s; }
-        .btn-primary { background: var(--primary); color: white; border: none; }
-        .btn-primary:hover { background: #1d4ed8; }
-
-        /* GrapesJS UI */
-        .gjs-one-bg { background-color: #ffffff !important; }
-        .gjs-two-color { color: #64748b !important; }
+        /* Editör Renk Paleti (Dark Theme) */
+        .gjs-one-bg { background-color: #1e293b !important; }
+        .gjs-two-color { color: #f8fafc !important; }
         .gjs-three-bg { background-color: var(--primary) !important; }
-        .gjs-cv-canvas { background-color: #cbd5e1 !important; }
-        
-        /* Auth Modal */
-        .modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 9999; align-items: center; justify-content: center; backdrop-filter: blur(5px); }
-        .modal-box { background: white; padding: 30px; border-radius: 12px; width: 350px; text-align: center; box-shadow: 0 20px 25px -5px rgba(0,0,0,0.1); }
-        .modal-box input { width: 100%; padding: 12px; margin: 10px 0; border: 1px solid #ddd; border-radius: 8px; box-sizing: border-box; }
+        .gjs-four-color { color: var(--primary) !important; }
+
+        header { 
+            height: 55px; 
+            background: #0f172a; 
+            color: white; 
+            display: flex; 
+            align-items: center; 
+            padding: 0 20px; 
+            justify-content: space-between;
+            border-bottom: 1px solid #334155;
+        }
+        .btn-clear { background:#ef4444; border:none; color:white; padding:7px 15px; border-radius:6px; cursor:pointer; font-weight: bold; }
     </style>
 </head>
 <body>
 
-    <div class="nav-header">
-        <div class="logo">YUSUF<span>STUDIO</span></div>
-        <div id="auth-controls">
-            {% if current_user.is_authenticated %}
-                <span style="margin-right:10px;">Hoş geldin, {{ current_user.username }}</span>
-                <button class="btn btn-primary" onclick="editor.store()">KAYDET</button>
-                <a href="/logout"><button class="btn">Çıkış</button></a>
-            {% else %}
-                <button class="btn" onclick="openAuth('login')">Giriş</button>
-                <button class="btn btn-primary" onclick="openAuth('register')">Kayıt Ol</button>
-            {% endif %}
+    <header>
+        <div style="font-weight: 800; font-size: 1.2rem;">YUSUF <span style="color:var(--primary)">STUDIO</span></div>
+        <div id="auth-check">
+            <button class="btn-clear" onclick="if(confirm('Tüm tasarımı silmek istediğine emin misin?')) editor.runCommand('core:canvas-clear')">Sıfırla</button>
         </div>
-    </div>
+    </header>
 
     <div id="gjs"></div>
-
-    <div id="authModal" class="modal">
-        <div class="modal-box">
-            <h2 id="modalTitle">Giriş</h2>
-            <input type="text" id="username" placeholder="Kullanıcı Adı">
-            <input type="password" id="password" placeholder="Şifre">
-            <button class="btn btn-primary" style="width:100%;" onclick="submitAuth()">Onayla</button>
-            <button onclick="closeAuth()" style="background:none; border:none; color:gray; margin-top:10px; cursor:pointer;">Kapat</button>
-        </div>
-    </div>
 
     <script src="https://unpkg.com/grapesjs"></script>
     <script src="https://unpkg.com/grapesjs-preset-webpage"></script>
@@ -66,45 +46,80 @@
     <script>
         const editor = grapesjs.init({
             container: '#gjs',
-            height: 'calc(100vh - 60px)',
-            storageManager: {
-                type: 'remote',
-                stepsBeforeSave: 3,
-                urlStore: '/auto-save',
-                urlLoad: '/load-site',
-                contentTypeJson: true,
-            },
+            height: 'calc(100vh - 55px)',
+            fromElement: true,
+            storageManager: { type: 'none' }, // Şimdilik hata vermemesi için local
             plugins: ['gjs-preset-webpage'],
-            canvas: {
-                styles: ['https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap']
+            // PANELDEKİ BLOKLAR BURADA TANIMLANIYOR
+            blockManager: {
+                blocks: [
+                    {
+                        id: 'section-hero',
+                        label: '<i class="fa fa-desktop"></i><br>Hero Alanı',
+                        category: 'Bölümler',
+                        content: `<section style="padding: 80px 20px; text-align: center; background: #ffffff; border-bottom: 1px solid #eee;">
+                                    <h1 style="font-size: 3.5rem; color: #1e293b; margin-bottom: 15px;">Hayalindeki Siteyi Kur</h1>
+                                    <p style="font-size: 1.2rem; color: #64748b; max-width: 700px; margin: 0 auto 30px;">Yusuf Studio ile sürükle ve bırak teknolojisinin keyfini çıkarın.</p>
+                                    <button style="background: #3b82f6; color: white; padding: 15px 35px; border: none; border-radius: 8px; font-weight: bold; cursor: pointer;">Hemen Dene</button>
+                                  </section>`,
+                    },
+                    {
+                        id: 'features-grid',
+                        label: '<i class="fa fa-th-large"></i><br>Özellikler',
+                        category: 'Bölümler',
+                        content: `<div style="display: flex; flex-wrap: wrap; padding: 50px; justify-content: center; gap: 20px;">
+                                    <div style="flex: 1; min-width: 250px; padding: 30px; border: 1px solid #e2e8f0; border-radius: 12px; text-align: center;">
+                                        <i class="fa fa-bolt" style="font-size: 40px; color: #3b82f6; margin-bottom: 15px;"></i>
+                                        <h3>Hızlı Altyapı</h3>
+                                        <p>En son teknolojilerle optimize edildi.</p>
+                                    </div>
+                                    <div style="flex: 1; min-width: 250px; padding: 30px; border: 1px solid #e2e8f0; border-radius: 12px; text-align: center;">
+                                        <i class="fa fa-shield" style="font-size: 40px; color: #3b82f6; margin-bottom: 15px;"></i>
+                                        <h3>Güvenli</h3>
+                                        <p>Verileriniz her zaman koruma altında.</p>
+                                    </div>
+                                  </div>`,
+                    },
+                    {
+                        id: 'simple-text',
+                        label: '<i class="fa fa-align-left"></i><br>Yazı Bloğu',
+                        category: 'İçerik',
+                        content: '<div style="padding: 20px; line-height: 1.6; color: #334155;">Buraya dilediğiniz açıklamayı yazın...</div>',
+                    },
+                    {
+                        id: 'image-element',
+                        label: '<i class="fa fa-image"></i><br>Resim',
+                        category: 'Medya',
+                        content: { type: 'image' },
+                    },
+                    {
+                        id: 'footer-pro',
+                        label: '<i class="fa fa-minus"></i><br>Alt Bilgi',
+                        category: 'Bölümler',
+                        content: `<footer style="padding: 30px; background: #0f172a; color: #94a3b8; text-align: center; font-size: 14px;">
+                                    <p>© 2026 Yusuf Studio. Tüm hakları saklıdır.</p>
+                                  </footer>`,
+                    }
+                ]
             }
         });
 
-        // Üst Araç Çubuğuna Ekstra Fonksiyonlar
-        const pn = editor.Panels;
-        pn.addButton('options', {
-            id: 'undo', className: 'fa fa-undo', command: 'core:undo', attributes: { title: 'Geri Al' }
-        });
-        pn.addButton('options', {
-            id: 'redo', className: 'fa fa-redo', command: 'core:redo', attributes: { title: 'İleri Al' }
+        // Sayfa açıldığında sağdaki blok panelini otomatik aktif et
+        editor.on('load', () => {
+            const openBlocksBtn = editor.Panels.getButton('views', 'open-blocks');
+            if (openBlocksBtn) openBlocksBtn.set('active', 1);
+            
+            // Editör tuvaline başlangıç rehberi ekle
+            editor.setComponents(`
+                <div style="padding: 50px; text-align: center; border: 2px dashed #cbd5e1; margin: 40px; border-radius: 20px; color: #94a3b8;">
+                    <h2>Tasarımına Başla!</h2>
+                    <p>Sağ taraftaki blokları buraya sürükle ve bırak.</p>
+                </div>
+            `);
         });
 
-        // Auth Mantığı
-        let mode = 'login';
-        function openAuth(m) { mode = m; document.getElementById('modalTitle').innerText = m === 'login' ? 'Giriş Yap' : 'Kayıt Ol'; document.getElementById('authModal').style.display = 'flex'; }
-        function closeAuth() { document.getElementById('authModal').style.display = 'none'; }
-        
-        async function submitAuth() {
-            const u = document.getElementById('username').value;
-            const p = document.getElementById('password').value;
-            const res = await fetch('/' + mode, {
-                method: 'POST',
-                headers: {'Content-Type': 'application/json'},
-                body: JSON.stringify({username: u, password: p})
-            });
-            if(res.ok) location.reload();
-            else alert("Hata! Bilgilerini kontrol et.");
-        }
+        // Türkçe dil desteği
+        editor.I18n.setLocale('tr');
     </script>
 </body>
 </html>
