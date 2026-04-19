@@ -3,65 +3,78 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Yusuf Builder | Professional Edition</title>
+    <title>Yusuf AI Builder | Next-Gen</title>
     
     <link rel="stylesheet" href="https://unpkg.com/grapesjs/dist/css/grapes.min.css">
     <link rel="stylesheet" href="https://unpkg.com/grapesjs-preset-webpage/dist/grapesjs-preset-webpage.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
     
     <style>
-        /* Estetik ve Modern Tema */
         :root {
-            --primary-color: #6366f1;
-            --bg-dark: #0f172a;
-            --panel-bg: #1e293b;
+            --neon-blue: #00f2ff;
+            --neon-purple: #bc13fe;
+            --bg-dark: #050505;
+            --panel-bg: #111111;
         }
 
-        body, html { height: 100%; margin: 0; background-color: var(--bg-dark); font-family: 'Inter', sans-serif; }
+        body, html { height: 100%; margin: 0; background: var(--bg-dark); font-family: 'Inter', sans-serif; color: white; overflow: hidden; }
 
-        /* Üst Header Kısmı */
-        .top-nav {
-            height: 50px;
-            background: var(--panel-bg);
+        /* Estetik Üst Panel */
+        .header-pro {
+            height: 60px;
+            background: rgba(17, 17, 17, 0.95);
             display: flex;
             align-items: center;
             justify-content: space-between;
-            padding: 0 20px;
-            color: white;
-            border-bottom: 1px solid #334155;
+            padding: 0 30px;
+            border-bottom: 2px solid var(--neon-blue);
+            box-shadow: 0 0 15px rgba(0, 242, 255, 0.2);
         }
 
-        .logo { font-weight: bold; font-size: 1.2rem; color: var(--primary-color); }
+        .logo { 
+            font-family: 'Orbitron', sans-serif; 
+            font-size: 1.5rem; 
+            background: linear-gradient(to right, var(--neon-blue), var(--neon-purple));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            letter-spacing: 2px;
+        }
 
-        .nav-buttons { display: flex; gap: 10px; }
+        .action-btns { display: flex; gap: 15px; }
 
-        .btn {
-            padding: 6px 15px;
-            border-radius: 6px;
-            border: none;
+        .pro-btn {
+            background: transparent;
+            border: 1px solid var(--neon-blue);
+            color: var(--neon-blue);
+            padding: 8px 20px;
+            border-radius: 4px;
             cursor: pointer;
-            font-size: 13px;
-            transition: 0.3s;
-            font-weight: 500;
+            font-family: 'Orbitron', sans-serif;
+            font-size: 0.8rem;
+            transition: 0.4s;
         }
 
-        .btn-save { background: var(--primary-color); color: white; }
-        .btn-lang { background: #334155; color: white; }
-        .btn:hover { opacity: 0.8; transform: translateY(-1px); }
+        .pro-btn:hover {
+            background: var(--neon-blue);
+            color: black;
+            box-shadow: 0 0 20px var(--neon-blue);
+        }
 
-        /* GrapesJS Özelleştirme */
+        /* GrapesJS Estetik Overrides */
         .gjs-one-bg { background-color: var(--panel-bg) !important; }
-        .gjs-two-color { color: #cbd5e1 !important; }
-        .gjs-three-bg { background-color: var(--primary-color) !important; }
-        .gjs-four-color { color: white !important; }
+        .gjs-two-color { color: #eee !important; }
+        .gjs-three-bg { background-color: var(--neon-blue) !important; }
+        .gjs-four-color { color: var(--neon-blue) !important; }
+        .gjs-cv-canvas { background-image: radial-gradient(#222 1px, transparent 1px) !important; background-size: 20px 20px !important; }
     </style>
 </head>
 <body>
 
-    <header class="top-nav">
-        <div class="logo">YUSUF BUILDER</div>
-        <div class="nav-buttons">
-            <button class="btn btn-lang" id="lang-btn" onclick="toggleLanguage()">🇬🇧 EN</button>
-            <button class="btn btn-save" onclick="saveData()">💾 <span id="txt-save">Kaydet & İndir</span></button>
+    <header class="header-pro">
+        <div class="logo">YUSUF BUILDER AI</div>
+        <div class="action-btns">
+            <button class="pro-btn" onclick="editor.runCommand('canvas-clear')">TEMİZLE</button>
+            <button class="pro-btn" onclick="saveCode()">İNDİR & KAYDET</button>
         </div>
     </header>
 
@@ -71,53 +84,46 @@
     <script src="https://unpkg.com/grapesjs-preset-webpage"></script>
 
     <script>
-        let currentLang = 'tr';
-        const translations = {
-            tr: { save: "Kaydet & İndir", lang: "🇬🇧 EN", welcome: "Yusuf Builder'a Hoş Geldiniz" },
-            en: { save: "Save & Download", lang: "🇹🇷 TR", welcome: "Welcome to Yusuf Builder" }
-        };
-
         const editor = grapesjs.init({
             container: '#gjs',
-            height: 'calc(100vh - 50px)',
-            width: 'auto',
+            height: 'calc(100vh - 60px)',
+            fromElement: true,
             storageManager: false,
-            plugins: ['gjs-preset-webpage'],
-            pluginsOpts: {
-                'gjs-preset-webpage': {
-                    // Blok menülerini ve araçlarını burada özelleştirebilirsin
+            // TÜRKÇELEŞTİRME PAKETİ
+            i18n: {
+                locale: 'tr',
+                messages: {
+                    tr: {
+                        blockManager: { labels: { 'Sections': 'Bölümler', 'Basic': 'Temel Bloklar' }, categories: { 'Layout': 'Düzen', 'Components': 'Bileşenler' } },
+                        deviceManager: { device: 'Cihaz' },
+                        panels: { buttons: { titles: { 'preview': 'Önizleme', 'fullscreen': 'Tam Ekran' } } },
+                        selectorManager: { label: 'Sınıflar', selected: 'Seçili' },
+                        styleManager: { sectors: { 'general': 'Genel', 'layout': 'Yerleşim', 'typography': 'Yazı Tipi', 'decorations': 'Dekorasyon' } },
+                        traitManager: { label: 'Ayarlar' }
+                    }
                 }
             },
-            // Estetik Renk Paleti
-            canvas: {
-                styles: ['https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&display=swap']
-            }
+            plugins: ['gjs-preset-webpage'],
+            pluginsOpts: { 'gjs-preset-webpage': {} }
         });
 
-        function toggleLanguage() {
-            currentLang = currentLang === 'tr' ? 'en' : 'tr';
-            
-            // Arayüz yazılarını güncelle
-            document.getElementById('txt-save').innerText = translations[currentLang].save;
-            document.getElementById('lang-btn').innerText = translations[currentLang].lang;
+        // Editörü tam Türkçe moduna zorla
+        editor.I18n.setLocale('tr');
 
-            // GrapesJS Editör içindeki dili değiştir (GrapesJS I18N)
-            editor.I18n.setLocale(currentLang);
-            
-            alert(currentLang === 'tr' ? "Dil Türkçe yapıldı!" : "Language switched to English!");
-        }
-
-        function saveData() {
-            const html = editor.getHtml();
-            const css = editor.getCss();
-            const fullCode = `<html><head><style>${css}</style></head><body>${html}</body></html>`;
-
-            // İndirme işlemi
-            const blob = new Blob([fullCode], { type: 'text/html' });
+        function saveCode() {
+            const code = `<html><head><style>${editor.getCss()}</style></head><body>${editor.getHtml()}</body></html>`;
+            const blob = new Blob([code], { type: 'text/html' });
             const a = document.createElement('a');
             a.href = URL.createObjectURL(blob);
-            a.download = 'tasarim.html';
+            a.download = 'yusuf-tasarim.html';
             a.click();
+            
+            // Sunucuya da sessizce gönder
+            fetch('/save', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ html: editor.getHtml(), css: editor.getCss() })
+            });
         }
     </script>
 </body>
