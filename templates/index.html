@@ -2,61 +2,60 @@
 <html lang="tr">
 <head>
     <meta charset="UTF-8">
-    <title>Yusuf Elite Studio | Ultimate Web Builder</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&family=Poppins:wght@700&family=Montserrat:wght@900&family=Playfair+Display:ital,wght@1,700&family=Roboto+Mono&family=Oswald:wght@500&display=swap" rel="stylesheet">
+    <title>Yusuf Builder | Pro Architect</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&family=Montserrat:wght@800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="https://unpkg.com/grapesjs/dist/css/grapes.min.css">
     
     <style>
-        :root { --primary: #2563eb; --panel-bg: #ffffff; --border: #e2e8f0; }
-        body, html { height: 100%; margin: 0; font-family: 'Inter', sans-serif; overflow: hidden; background: #f8fafc; }
+        :root { --primary: #2563eb; --accent: #f59e0b; --bg-canvas: #f8fafc; }
+        body, html { height: 100%; margin: 0; font-family: 'Inter', sans-serif; overflow: hidden; }
         
-        /* Navbar UI */
-        .top-bar { height: 60px; background: white; border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; padding: 0 25px; box-shadow: 0 2px 4px rgba(0,0,0,0.02); z-index: 1000; position: relative; }
-        .logo { font-weight: 800; color: var(--primary); font-family: 'Montserrat'; font-size: 1.4rem; letter-spacing: -1px; }
-        .auth-zone button { padding: 9px 18px; border-radius: 8px; border: 1px solid var(--border); cursor: pointer; font-weight: 600; transition: 0.2s; font-family: 'Inter'; }
-        .btn-main { background: var(--primary); color: white; border: none !important; }
-        .btn-main:hover { background: #1d4ed8; transform: translateY(-1px); }
+        /* Navbar Elite UI */
+        .app-nav { height: 65px; background: white; border-bottom: 1px solid #e2e8f0; display: flex; align-items: center; justify-content: space-between; padding: 0 30px; }
+        .app-nav .brand { font-family: 'Montserrat'; font-size: 1.5rem; color: #1e293b; letter-spacing: -1px; }
+        .app-nav .brand span { color: var(--primary); }
+        
+        /* Dashboard Buttons */
+        .btn { padding: 10px 20px; border-radius: 8px; font-weight: 600; cursor: pointer; border: 1px solid #e2e8f0; transition: 0.3s; }
+        .btn-primary { background: var(--primary); color: white; border: none; }
+        .btn-primary:hover { opacity: 0.9; box-shadow: 0 4px 12px rgba(37, 99, 235, 0.2); }
 
-        /* Modal Stilleri */
-        .modal { display: none; position: fixed; top:0; left:0; width:100%; height:100%; background: rgba(15, 23, 42, 0.6); z-index: 2000; justify-content: center; align-items: center; backdrop-filter: blur(4px); }
-        .modal-content { background: white; padding: 40px; border-radius: 16px; width: 380px; box-shadow: 0 25px 50px -12px rgba(0,0,0,0.25); text-align: center; }
-        .modal-content h2 { margin-top: 0; font-family: 'Montserrat'; margin-bottom: 25px; }
-        .modal-content input { width: 100%; padding: 14px; margin: 8px 0; border: 1px solid var(--border); border-radius: 8px; font-size: 16px; outline: none; transition: 0.3s; }
-        .modal-content input:focus { border-color: var(--primary); ring: 2px solid var(--primary); }
+        /* Modal */
+        .modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 9999; align-items: center; justify-content: center; backdrop-filter: blur(5px); }
+        .modal-box { background: white; padding: 40px; border-radius: 20px; width: 400px; text-align: center; }
+        .modal-box input { width: 100%; padding: 12px; margin: 10px 0; border: 1px solid #ddd; border-radius: 8px; box-sizing: border-box; }
 
-        /* GrapesJS Customization */
+        /* GrapesJS UI */
         .gjs-one-bg { background-color: #ffffff !important; }
-        .gjs-two-color { color: #475569 !important; }
+        .gjs-two-color { color: #64748b !important; }
         .gjs-three-bg { background-color: var(--primary) !important; }
-        .gjs-cv-canvas { background-color: #f1f5f9 !important; }
-        .gjs-block { border: 1px solid var(--border) !important; border-radius: 8px !important; transition: 0.2s !important; }
-        .gjs-block:hover { border-color: var(--primary) !important; box-shadow: 0 4px 12px rgba(0,0,0,0.08); }
+        .gjs-cv-canvas { background-color: var(--bg-canvas) !important; }
     </style>
 </head>
 <body>
 
-    <header class="top-bar">
-        <div class="logo">YUSUF STUDIO <span>PRO</span></div>
-        <div class="auth-zone" id="auth-buttons">
+    <nav class="app-nav">
+        <div class="brand">YUSUF<span>STUDIO</span></div>
+        <div class="actions">
             {% if current_user.is_authenticated %}
-                <span style="font-weight: 600; margin-right: 15px;">👋 {{ current_user.username }}</span>
-                <button class="btn-main" onclick="editor.store()">MANUEL KAYDET</button>
-                <a href="/logout"><button>Çıkış</button></a>
+                <span style="margin-right:15px; font-size: 14px;">Aktif: <b>{{ current_user.username }}</b></span>
+                <button class="btn btn-primary" onclick="editor.store()">YAYINLA</button>
+                <a href="/logout"><button class="btn">Çıkış</button></a>
             {% else %}
-                <button onclick="openModal('login')">Giriş Yap</button>
-                <button class="btn-main" onclick="openModal('register')">Hemen Katıl</button>
+                <button class="btn" onclick="openAuth('login')">Giriş</button>
+                <button class="btn btn-primary" onclick="openAuth('register')">Ücretsiz Katıl</button>
             {% endif %}
         </div>
-    </header>
+    </nav>
 
     <div id="authModal" class="modal">
-        <div class="modal-content">
-            <h2 id="modalTitle">Giriş Yap</h2>
-            <input type="text" id="username" placeholder="Kullanıcı Adı">
-            <input type="password" id="password" placeholder="Şifre">
-            <button class="btn-main" style="width:100%; padding:14px; margin-top:15px; border-radius:8px; cursor:pointer;" onclick="submitAuth()">DEVAM ET</button>
-            <button onclick="closeModal()" style="background:none; border:none; color:#64748b; margin-top:15px; cursor:pointer;">Kapat</button>
+        <div class="modal-box">
+            <h2 id="modalTitle">Hoş Geldiniz</h2>
+            <input type="text" id="userIn" placeholder="Kullanıcı Adı">
+            <input type="password" id="passIn" placeholder="Şifre">
+            <button class="btn btn-primary" style="width:100%; margin-top:20px;" onclick="doAuth()">Devam Et</button>
+            <p style="margin-top:15px; cursor:pointer; color: #64748b;" onclick="closeAuth()">Kapat</p>
         </div>
     </div>
 
@@ -66,104 +65,62 @@
     <script src="https://unpkg.com/grapesjs-preset-webpage"></script>
 
     <script>
-        let authMode = 'login';
-
+        let currentMode = 'login';
+        
         const editor = grapesjs.init({
             container: '#gjs',
-            height: 'calc(100vh - 60px)',
+            height: 'calc(100vh - 65px)',
+            fromElement: true,
             storageManager: {
                 type: 'remote',
-                stepsBeforeSave: 1, // Her harekette otomatik kayıt
+                stepsBeforeSave: 1,
                 urlStore: '/auto-save',
                 urlLoad: '/load-site',
                 contentTypeJson: true,
             },
+            assetManager: {
+                assets: [
+                    {src: 'https://images.unsplash.com/photo-1498050108023-c5249f4df085', name: 'Tech'},
+                    {src: 'https://images.unsplash.com/photo-1460925895917-afdab827c52f', name: 'Business'},
+                    {src: 'https://images.unsplash.com/photo-1557804506-669a67965ba0', name: 'Success'}
+                ],
+            },
             plugins: ['gjs-preset-webpage'],
-            blockManager: {
-                blocks: [
-                    {
-                        id: 'hero-luxury',
-                        label: '<i class="fa fa-gem"></i><br>Lüks Hero',
-                        category: 'Premium Bölümler',
-                        content: `<section style="padding: 120px 10%; background: #0f172a; color: white; text-align: center;">
-                                    <h1 style="font-family:'Montserrat'; font-size: 4.5rem; letter-spacing:-2px; line-height:1;">TASARIMIN <span style="color:#3b82f6;">ZİRVESİ</span></h1>
-                                    <p style="font-size: 1.3rem; opacity: 0.7; max-width: 600px; margin: 20px auto;">Yusuf Studio ile kod yazmadan dünya standartlarında siteler inşa edin.</p>
-                                    <button style="background:#3b82f6; color:white; padding:18px 45px; border:none; border-radius:50px; font-weight:700; cursor:pointer; margin-top:30px;">ŞİMDİ BAŞLAYIN</button>
-                                  </section>`
-                    },
-                    {
-                        id: 'pricing-table',
-                        label: '<i class="fa fa-credit-card"></i><br>Fiyatlandırma',
-                        category: 'Bileşenler',
-                        content: `<div style="display: flex; gap: 20px; padding: 60px; justify-content: center; background: #f8fafc;">
-                                    <div style="background:white; padding:40px; border-radius:20px; box-shadow:0 10px 30px rgba(0,0,0,0.05); text-align:center; flex:1; max-width:300px;">
-                                        <h3 style="font-family:'Poppins';">BAŞLANGIÇ</h3>
-                                        <div style="font-size:3rem; font-weight:800; margin:20px 0;">$0</div>
-                                        <p style="color:#64748b; margin-bottom:30px;">Yeni başlayanlar için temel özellikler.</p>
-                                        <button style="width:100%; padding:12px; border:2px solid #3b82f6; background:transparent; color:#3b82f6; border-radius:10px; font-weight:600;">SEÇ</button>
-                                    </div>
-                                    <div style="background:white; padding:40px; border-radius:20px; border:2px solid #3b82f6; text-align:center; flex:1; max-width:300px; transform: scale(1.05);">
-                                        <h3 style="font-family:'Poppins';">PRO</h3>
-                                        <div style="font-size:3rem; font-weight:800; margin:20px 0;">$29</div>
-                                        <p style="color:#64748b; margin-bottom:30px;">İşini büyütmek isteyen profesyoneller için.</p>
-                                        <button style="width:100%; padding:12px; background:#3b82f6; color:white; border:none; border-radius:10px; font-weight:600;">HEMEN BAŞLA</button>
-                                    </div>
-                                  </div>`
-                    },
-                    {
-                        id: 'font-sampler',
-                        label: '<i class="fa fa-font"></i><br>Font Kütüphanesi',
-                        category: 'Tasarım',
-                        content: `<div style="padding:50px; background:white; text-align:center; border:1px solid #eee;">
-                                    <h2 style="font-family:'Playfair Display'; font-size:3rem;">Zarif (Playfair)</h2>
-                                    <h2 style="font-family:'Oswald'; text-transform:uppercase;">Güçlü (Oswald)</h2>
-                                    <p style="font-family:'Roboto Mono';">Kod Yazı Tipi (Mono)</p>
-                                    <p style="font-family:'Inter'; font-weight:300;">Modern & İnce (Inter)</p>
-                                  </div>`
-                    }
-                ]
+            i18n: { locale: 'tr' }
+        });
+
+        // OTOMATİK KARŞILAMA VE REHBER
+        editor.on('load', () => {
+            if (!editor.getHtml() || editor.getHtml() === '<body></body>') {
+                editor.setComponents(`
+                    <div style="padding: 100px 20px; text-align: center; border: 3px dashed #e2e8f0; margin: 40px; border-radius: 30px;">
+                        <i class="fa-solid fa-wand-magic-sparkles" style="font-size: 50px; color: #2563eb; margin-bottom: 20px;"></i>
+                        <h1 style="color: #1e293b; font-family: 'Inter';">Harika Bir Şey Tasarla</h1>
+                        <p style="color: #64748b;">Sol taraftaki blokları buraya sürükleyerek başla.</p>
+                    </div>
+                `);
             }
         });
 
-        // AUTH MODAL LOGIC
-        function openModal(mode) {
-            authMode = mode;
-            document.getElementById('modalTitle').innerText = mode === 'login' ? 'Giriş Yap' : 'Kayıt Ol';
+        // AUTH İŞLEMLERİ
+        function openAuth(m) {
+            currentMode = m;
+            document.getElementById('modalTitle').innerText = m === 'login' ? 'Giriş Yap' : 'Kayıt Ol';
             document.getElementById('authModal').style.display = 'flex';
         }
-        function closeModal() { document.getElementById('authModal').style.display = 'none'; }
-
-        async function submitAuth() {
-            const username = document.getElementById('username').value;
-            const password = document.getElementById('password').value;
-            if(!username || !password) return alert("Alanları doldur!");
-
-            const response = await fetch('/' + authMode, {
+        function closeAuth() { document.getElementById('authModal').style.display = 'none'; }
+        
+        async function doAuth() {
+            const username = document.getElementById('userIn').value;
+            const password = document.getElementById('passIn').value;
+            const res = await fetch('/' + currentMode, {
                 method: 'POST',
                 headers: {'Content-Type': 'application/json'},
                 body: JSON.stringify({username, password})
             });
-
-            if(response.ok) {
-                location.reload();
-            } else {
-                const err = await response.json();
-                alert("Hata: " + err.message);
-            }
+            if(res.ok) location.reload();
+            else alert("İşlem başarısız, lütfen bilgileri kontrol et.");
         }
-
-        editor.on('load', () => {
-            // Boş sayfa rehberi
-            if(!editor.getHtml() || editor.getHtml() === '<body></body>') {
-                editor.setComponents(`<div style="padding:100px; text-align:center; color:#cbd5e1; border:4px dashed #f1f5f9; margin:50px; border-radius:30px;">
-                    <i class="fa fa-cloud-upload" style="font-size:4rem; margin-bottom:20px;"></i>
-                    <h1 style="font-family:'Inter';">TASARIMA BAŞLA</h1>
-                    <p>Sol taraftaki blokları buraya sürükle ve kendi dünyanı kur.</p>
-                </div>`);
-            }
-        });
-
-        editor.I18n.setLocale('tr');
     </script>
 </body>
 </html>

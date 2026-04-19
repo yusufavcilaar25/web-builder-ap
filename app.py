@@ -2,13 +2,12 @@ from flask import Flask, render_template, request, jsonify, redirect, url_for
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import LoginManager, UserMixin, login_user, login_required, logout_user, current_user
 from werkzeug.security import generate_password_hash, check_password_hash
-import json, os
+import json
 
 app = Flask(__name__)
-app.config['SECRET_KEY'] = 'yusuf_ultra_secret_2026'
-# Render'da verilerin silinmemesi için geçici SQLite yolu (Profesyonel üretimde Postgres kullanılır)
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///studio.db'
-app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+app.config['SECRET_KEY'] = 'yusuf_studio_pro_2026'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///studio_v2.db'
+app.config['SQLALCHEMY_ENGINE_OPTIONS'] = {"check_same_thread": False} # SQLite kilitlenmesini önler
 
 db = SQLAlchemy(app)
 login_manager = LoginManager(app)
@@ -31,8 +30,10 @@ def index():
 @app.route('/register', methods=['POST'])
 def register():
     data = request.get_json()
+    if not data or 'username' not in data or 'password' not in data:
+        return jsonify({"message": "Geçersiz veri"}), 400
     if User.query.filter_by(username=data['username']).first():
-        return jsonify({"message": "Bu isim alınmış!"}), 400
+        return jsonify({"message": "Bu kullanıcı zaten mevcut"}), 400
     user = User(username=data['username'], password=generate_password_hash(data['password']))
     db.session.add(user)
     db.session.commit()
@@ -46,7 +47,7 @@ def login():
     if user and check_password_hash(user.password, data['password']):
         login_user(user)
         return jsonify({"success": True})
-    return jsonify({"message": "Hatalı giriş!"}), 401
+    return jsonify({"message": "Hatalı kimlik bilgileri"}), 401
 
 @app.route('/logout')
 def logout():
@@ -59,7 +60,7 @@ def auto_save():
     data = request.get_json()
     current_user.site_data = json.dumps(data)
     db.session.commit()
-    return jsonify({"status": "saved"})
+    return jsonify({"status": "success"})
 
 @app.route('/load-site')
 @login_required
