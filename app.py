@@ -2,10 +2,11 @@ from flask import Flask, render_template, request, jsonify, redirect, url_for
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import LoginManager, UserMixin, login_user, login_required, logout_user, current_user
 from werkzeug.security import generate_password_hash, check_password_hash
-import json
+import json, os
 
 app = Flask(__name__)
-app.config['SECRET_KEY'] = 'yusuf_studio_secret_9988'
+app.config['SECRET_KEY'] = 'yusuf_ultra_secret_2026'
+# Render'da verilerin silinmemesi için geçici SQLite yolu (Profesyonel üretimde Postgres kullanılır)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///studio.db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
@@ -31,7 +32,7 @@ def index():
 def register():
     data = request.get_json()
     if User.query.filter_by(username=data['username']).first():
-        return jsonify({"message": "Kullanıcı zaten mevcut"}), 400
+        return jsonify({"message": "Bu isim alınmış!"}), 400
     user = User(username=data['username'], password=generate_password_hash(data['password']))
     db.session.add(user)
     db.session.commit()
@@ -45,7 +46,7 @@ def login():
     if user and check_password_hash(user.password, data['password']):
         login_user(user)
         return jsonify({"success": True})
-    return jsonify({"message": "Hatalı kullanıcı adı veya şifre"}), 401
+    return jsonify({"message": "Hatalı giriş!"}), 401
 
 @app.route('/logout')
 def logout():

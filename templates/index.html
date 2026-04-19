@@ -2,52 +2,61 @@
 <html lang="tr">
 <head>
     <meta charset="UTF-8">
-    <title>Yusuf Elite Studio | SaaS Edition</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&family=Poppins:wght@400;700&family=Montserrat:wght@800&family=Playfair+Display:ital@1&family=Roboto+Mono&family=Lora&family=Oswald:wght@500&display=swap" rel="stylesheet">
+    <title>Yusuf Elite Studio | Ultimate Web Builder</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&family=Poppins:wght@700&family=Montserrat:wght@900&family=Playfair+Display:ital,wght@1,700&family=Roboto+Mono&family=Oswald:wght@500&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="https://unpkg.com/grapesjs/dist/css/grapes.min.css">
     
     <style>
-        :root { --primary: #2563eb; --bg: #f8fafc; }
-        body, html { height: 100%; margin: 0; font-family: 'Inter', sans-serif; overflow: hidden; }
+        :root { --primary: #2563eb; --panel-bg: #ffffff; --border: #e2e8f0; }
+        body, html { height: 100%; margin: 0; font-family: 'Inter', sans-serif; overflow: hidden; background: #f8fafc; }
         
-        /* Navbar */
-        .navbar { height: 60px; background: white; border-bottom: 1px solid #e2e8f0; display: flex; align-items: center; justify-content: space-between; padding: 0 25px; z-index: 100; }
-        .logo { font-weight: 800; color: var(--primary); font-family: 'Montserrat'; font-size: 1.2rem; }
-        
-        /* Auth Modal */
-        .modal { display: none; position: fixed; top:0; left:0; width:100%; height:100%; background: rgba(0,0,0,0.5); z-index: 2000; justify-content: center; align-items: center; }
-        .modal-content { background: white; padding: 30px; border-radius: 12px; width: 350px; box-shadow: 0 20px 25px -5px rgba(0,0,0,0.1); }
-        .modal-content h2 { margin-top: 0; font-family: 'Montserrat'; font-size: 1.2rem; }
-        .modal-content input { width: 100%; padding: 12px; margin: 10px 0; border: 1px solid #ddd; border-radius: 6px; box-sizing: border-box; }
-        .modal-btn { width: 100%; background: var(--primary); color: white; border: none; padding: 12px; border-radius: 6px; cursor: pointer; font-weight: 600; }
+        /* Navbar UI */
+        .top-bar { height: 60px; background: white; border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; padding: 0 25px; box-shadow: 0 2px 4px rgba(0,0,0,0.02); z-index: 1000; position: relative; }
+        .logo { font-weight: 800; color: var(--primary); font-family: 'Montserrat'; font-size: 1.4rem; letter-spacing: -1px; }
+        .auth-zone button { padding: 9px 18px; border-radius: 8px; border: 1px solid var(--border); cursor: pointer; font-weight: 600; transition: 0.2s; font-family: 'Inter'; }
+        .btn-main { background: var(--primary); color: white; border: none !important; }
+        .btn-main:hover { background: #1d4ed8; transform: translateY(-1px); }
 
-        .auth-btn-group button { padding: 8px 16px; border-radius: 6px; border: 1px solid #ddd; cursor: pointer; font-weight: 500; margin-left: 5px; transition: 0.2s; }
-        .btn-reg { background: var(--primary); color: white; border: none !important; }
+        /* Modal Stilleri */
+        .modal { display: none; position: fixed; top:0; left:0; width:100%; height:100%; background: rgba(15, 23, 42, 0.6); z-index: 2000; justify-content: center; align-items: center; backdrop-filter: blur(4px); }
+        .modal-content { background: white; padding: 40px; border-radius: 16px; width: 380px; box-shadow: 0 25px 50px -12px rgba(0,0,0,0.25); text-align: center; }
+        .modal-content h2 { margin-top: 0; font-family: 'Montserrat'; margin-bottom: 25px; }
+        .modal-content input { width: 100%; padding: 14px; margin: 8px 0; border: 1px solid var(--border); border-radius: 8px; font-size: 16px; outline: none; transition: 0.3s; }
+        .modal-content input:focus { border-color: var(--primary); ring: 2px solid var(--primary); }
+
+        /* GrapesJS Customization */
+        .gjs-one-bg { background-color: #ffffff !important; }
+        .gjs-two-color { color: #475569 !important; }
+        .gjs-three-bg { background-color: var(--primary) !important; }
+        .gjs-cv-canvas { background-color: #f1f5f9 !important; }
+        .gjs-block { border: 1px solid var(--border) !important; border-radius: 8px !important; transition: 0.2s !important; }
+        .gjs-block:hover { border-color: var(--primary) !important; box-shadow: 0 4px 12px rgba(0,0,0,0.08); }
     </style>
 </head>
 <body>
 
-    <nav class="navbar">
-        <div class="logo">YUSUF // STUDIO</div>
-        <div class="auth-btn-group">
+    <header class="top-bar">
+        <div class="logo">YUSUF STUDIO <span>PRO</span></div>
+        <div class="auth-zone" id="auth-buttons">
             {% if current_user.is_authenticated %}
-                <span style="margin-right:10px;">👋 {{ current_user.username }}</span>
+                <span style="font-weight: 600; margin-right: 15px;">👋 {{ current_user.username }}</span>
+                <button class="btn-main" onclick="editor.store()">MANUEL KAYDET</button>
                 <a href="/logout"><button>Çıkış</button></a>
             {% else %}
                 <button onclick="openModal('login')">Giriş Yap</button>
-                <button class="btn-reg" onclick="openModal('register')">Kayıt Ol</button>
+                <button class="btn-main" onclick="openModal('register')">Hemen Katıl</button>
             {% endif %}
         </div>
-    </nav>
+    </header>
 
     <div id="authModal" class="modal">
         <div class="modal-content">
             <h2 id="modalTitle">Giriş Yap</h2>
             <input type="text" id="username" placeholder="Kullanıcı Adı">
             <input type="password" id="password" placeholder="Şifre">
-            <button class="modal-btn" onclick="submitAuth()">Onayla</button>
-            <button onclick="closeModal()" style="background:none; border:none; color:gray; width:100%; margin-top:10px; cursor:pointer;">İptal</button>
+            <button class="btn-main" style="width:100%; padding:14px; margin-top:15px; border-radius:8px; cursor:pointer;" onclick="submitAuth()">DEVAM ET</button>
+            <button onclick="closeModal()" style="background:none; border:none; color:#64748b; margin-top:15px; cursor:pointer;">Kapat</button>
         </div>
     </div>
 
@@ -57,64 +66,68 @@
     <script src="https://unpkg.com/grapesjs-preset-webpage"></script>
 
     <script>
-        let currentAuthMode = 'login';
+        let authMode = 'login';
 
         const editor = grapesjs.init({
             container: '#gjs',
             height: 'calc(100vh - 60px)',
             storageManager: {
                 type: 'remote',
-                stepsBeforeSave: 1,
+                stepsBeforeSave: 1, // Her harekette otomatik kayıt
                 urlStore: '/auto-save',
                 urlLoad: '/load-site',
                 contentTypeJson: true,
             },
             plugins: ['gjs-preset-webpage'],
-            // ... önceki kodların devamı ...
-blockManager: {
-    blocks: [
-        {
-            id: 'video-hero',
-            label: '<i class="fa fa-play-circle"></i><br>Video Bölümü',
-            category: 'Bölümler',
-            content: `<section style="padding:100px 0; background:#000; color:white; text-align:center;">
-                        <h2 style="margin-bottom:20px;">Tanıtım Videomuz</h2>
-                        <iframe width="560" height="315" src="https://www.youtube.com/embed/dQw4w9WgXcQ" frameborder="0" allowfullscreen></iframe>
-                      </section>`
-        },
-        {
-            id: 'team-section',
-            label: '<i class="fa fa-users"></i><br>Ekip Kartları',
-            category: 'Bileşenler',
-            content: `<div style="display:flex; gap:20px; padding:50px; justify-content:center;">
-                        <div style="text-align:center; flex:1;">
-                            <div style="width:100px; height:100px; background:#ddd; border-radius:50%; margin:auto;"></div>
-                            <h4>Yusuf Arda</h4><p>Lead Developer</p>
-                        </div>
-                        <div style="text-align:center; flex:1;">
-                            <div style="width:100px; height:100px; background:#ddd; border-radius:50%; margin:auto;"></div>
-                            <h4>Zeynep Kaya</h4><p>UI/UX Designer</p>
-                        </div>
-                      </div>`
-        },
-        {
-            id: 'gallery-grid',
-            label: '<i class="fa fa-images"></i><br>Resim Galerisi',
-            category: 'Bileşenler',
-            content: `<div style="display:grid; grid-template-columns:repeat(3, 1fr); gap:10px; padding:20px;">
-                        <div style="background:#eee; height:200px;"></div>
-                        <div style="background:#eee; height:200px;"></div>
-                        <div style="background:#eee; height:200px;"></div>
-                      </div>`
-        },
-        // Daha önceki Hero, Pricing ve Footer bloklarını da burada tutmaya devam et...
-    ]
-}
+            blockManager: {
+                blocks: [
+                    {
+                        id: 'hero-luxury',
+                        label: '<i class="fa fa-gem"></i><br>Lüks Hero',
+                        category: 'Premium Bölümler',
+                        content: `<section style="padding: 120px 10%; background: #0f172a; color: white; text-align: center;">
+                                    <h1 style="font-family:'Montserrat'; font-size: 4.5rem; letter-spacing:-2px; line-height:1;">TASARIMIN <span style="color:#3b82f6;">ZİRVESİ</span></h1>
+                                    <p style="font-size: 1.3rem; opacity: 0.7; max-width: 600px; margin: 20px auto;">Yusuf Studio ile kod yazmadan dünya standartlarında siteler inşa edin.</p>
+                                    <button style="background:#3b82f6; color:white; padding:18px 45px; border:none; border-radius:50px; font-weight:700; cursor:pointer; margin-top:30px;">ŞİMDİ BAŞLAYIN</button>
+                                  </section>`
+                    },
+                    {
+                        id: 'pricing-table',
+                        label: '<i class="fa fa-credit-card"></i><br>Fiyatlandırma',
+                        category: 'Bileşenler',
+                        content: `<div style="display: flex; gap: 20px; padding: 60px; justify-content: center; background: #f8fafc;">
+                                    <div style="background:white; padding:40px; border-radius:20px; box-shadow:0 10px 30px rgba(0,0,0,0.05); text-align:center; flex:1; max-width:300px;">
+                                        <h3 style="font-family:'Poppins';">BAŞLANGIÇ</h3>
+                                        <div style="font-size:3rem; font-weight:800; margin:20px 0;">$0</div>
+                                        <p style="color:#64748b; margin-bottom:30px;">Yeni başlayanlar için temel özellikler.</p>
+                                        <button style="width:100%; padding:12px; border:2px solid #3b82f6; background:transparent; color:#3b82f6; border-radius:10px; font-weight:600;">SEÇ</button>
+                                    </div>
+                                    <div style="background:white; padding:40px; border-radius:20px; border:2px solid #3b82f6; text-align:center; flex:1; max-width:300px; transform: scale(1.05);">
+                                        <h3 style="font-family:'Poppins';">PRO</h3>
+                                        <div style="font-size:3rem; font-weight:800; margin:20px 0;">$29</div>
+                                        <p style="color:#64748b; margin-bottom:30px;">İşini büyütmek isteyen profesyoneller için.</p>
+                                        <button style="width:100%; padding:12px; background:#3b82f6; color:white; border:none; border-radius:10px; font-weight:600;">HEMEN BAŞLA</button>
+                                    </div>
+                                  </div>`
+                    },
+                    {
+                        id: 'font-sampler',
+                        label: '<i class="fa fa-font"></i><br>Font Kütüphanesi',
+                        category: 'Tasarım',
+                        content: `<div style="padding:50px; background:white; text-align:center; border:1px solid #eee;">
+                                    <h2 style="font-family:'Playfair Display'; font-size:3rem;">Zarif (Playfair)</h2>
+                                    <h2 style="font-family:'Oswald'; text-transform:uppercase;">Güçlü (Oswald)</h2>
+                                    <p style="font-family:'Roboto Mono';">Kod Yazı Tipi (Mono)</p>
+                                    <p style="font-family:'Inter'; font-weight:300;">Modern & İnce (Inter)</p>
+                                  </div>`
+                    }
+                ]
+            }
         });
 
-        // MODAL YÖNETİMİ
+        // AUTH MODAL LOGIC
         function openModal(mode) {
-            currentAuthMode = mode;
+            authMode = mode;
             document.getElementById('modalTitle').innerText = mode === 'login' ? 'Giriş Yap' : 'Kayıt Ol';
             document.getElementById('authModal').style.display = 'flex';
         }
@@ -123,14 +136,32 @@ blockManager: {
         async function submitAuth() {
             const username = document.getElementById('username').value;
             const password = document.getElementById('password').value;
-            const res = await fetch('/' + currentAuthMode, {
+            if(!username || !password) return alert("Alanları doldur!");
+
+            const response = await fetch('/' + authMode, {
                 method: 'POST',
                 headers: {'Content-Type': 'application/json'},
                 body: JSON.stringify({username, password})
             });
-            if(res.ok) location.reload();
-            else alert("İşlem başarısız!");
+
+            if(response.ok) {
+                location.reload();
+            } else {
+                const err = await response.json();
+                alert("Hata: " + err.message);
+            }
         }
+
+        editor.on('load', () => {
+            // Boş sayfa rehberi
+            if(!editor.getHtml() || editor.getHtml() === '<body></body>') {
+                editor.setComponents(`<div style="padding:100px; text-align:center; color:#cbd5e1; border:4px dashed #f1f5f9; margin:50px; border-radius:30px;">
+                    <i class="fa fa-cloud-upload" style="font-size:4rem; margin-bottom:20px;"></i>
+                    <h1 style="font-family:'Inter';">TASARIMA BAŞLA</h1>
+                    <p>Sol taraftaki blokları buraya sürükle ve kendi dünyanı kur.</p>
+                </div>`);
+            }
+        });
 
         editor.I18n.setLocale('tr');
     </script>
