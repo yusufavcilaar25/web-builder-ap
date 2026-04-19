@@ -1,87 +1,124 @@
-<!<DOCTYPE html>
+<!DOCTYPE html>
 <html lang="tr">
 <head>
     <meta charset="UTF-8">
-    <title>Yusuf Web Builder Pro</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Yusuf Builder | Professional Edition</title>
+    
     <link rel="stylesheet" href="https://unpkg.com/grapesjs/dist/css/grapes.min.css">
-    <script src="https://unpkg.com/grapesjs"></script>
+    <link rel="stylesheet" href="https://unpkg.com/grapesjs-preset-webpage/dist/grapesjs-preset-webpage.min.css">
+    
     <style>
-        body, html { height: 100%; margin: 0; }
-        #gjs { height: 0px; overflow: hidden; }
-        /* Panel ve Buton Stilleri */
-        .panel__devices { position: absolute; top: 10px; left: 50%; transform: translateX(-50%); z-index: 10; }
-        .save-btn { 
-            position: absolute; top: 10px; right: 20px; z-index: 100;
-            background: #27ae60; color: white; border: none; padding: 10px 20px; 
-            border-radius: 5px; cursor: pointer; font-weight: bold;
+        /* Estetik ve Modern Tema */
+        :root {
+            --primary-color: #6366f1;
+            --bg-dark: #0f172a;
+            --panel-bg: #1e293b;
         }
-        .save-btn:hover { background: #2ecc71; }
+
+        body, html { height: 100%; margin: 0; background-color: var(--bg-dark); font-family: 'Inter', sans-serif; }
+
+        /* Üst Header Kısmı */
+        .top-nav {
+            height: 50px;
+            background: var(--panel-bg);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 20px;
+            color: white;
+            border-bottom: 1px solid #334155;
+        }
+
+        .logo { font-weight: bold; font-size: 1.2rem; color: var(--primary-color); }
+
+        .nav-buttons { display: flex; gap: 10px; }
+
+        .btn {
+            padding: 6px 15px;
+            border-radius: 6px;
+            border: none;
+            cursor: pointer;
+            font-size: 13px;
+            transition: 0.3s;
+            font-weight: 500;
+        }
+
+        .btn-save { background: var(--primary-color); color: white; }
+        .btn-lang { background: #334155; color: white; }
+        .btn:hover { opacity: 0.8; transform: translateY(-1px); }
+
+        /* GrapesJS Özelleştirme */
+        .gjs-one-bg { background-color: var(--panel-bg) !important; }
+        .gjs-two-color { color: #cbd5e1 !important; }
+        .gjs-three-bg { background-color: var(--primary-color) !important; }
+        .gjs-four-color { color: white !important; }
     </style>
 </head>
 <body>
 
-    <div class="panel__devices"></div>
-    <button class="save-btn" onclick="saveContent()">💾 Tasarımı Kaydet & İndir</button>
+    <header class="top-nav">
+        <div class="logo">YUSUF BUILDER</div>
+        <div class="nav-buttons">
+            <button class="btn btn-lang" id="lang-btn" onclick="toggleLanguage()">🇬🇧 EN</button>
+            <button class="btn btn-save" onclick="saveData()">💾 <span id="txt-save">Kaydet & İndir</span></button>
+        </div>
+    </header>
+
     <div id="gjs"></div>
 
+    <script src="https://unpkg.com/grapesjs"></script>
+    <script src="https://unpkg.com/grapesjs-preset-webpage"></script>
+
     <script>
+        let currentLang = 'tr';
+        const translations = {
+            tr: { save: "Kaydet & İndir", lang: "🇬🇧 EN", welcome: "Yusuf Builder'a Hoş Geldiniz" },
+            en: { save: "Save & Download", lang: "🇹🇷 TR", welcome: "Welcome to Yusuf Builder" }
+        };
+
         const editor = grapesjs.init({
             container: '#gjs',
-            fromElement: true,
-            height: '100vh',
+            height: 'calc(100vh - 50px)',
             width: 'auto',
-            storageManager: false, // Şimdilik yerel kayıt kapalı
-            blockManager: {
-                appendTo: '#blocks',
-                blocks: [
-                    {
-                        id: 'section', 
-                        label: '<b>Bölüm</b>', 
-                        attributes: { class: 'gjs-block-section' },
-                        content: `<section style="padding: 50px; text-align: center;"><h1>Yeni Bölüm</h1><p>Burası açıklama alanı...</p></section>`
-                    },
-                    {
-                        id: 'text',
-                        label: 'Metin',
-                        content: '<div data-gjs-type="text">Metninizi buraya yazın</div>',
-                    },
-                    {
-                        id: 'image',
-                        label: 'Resim',
-                        select: true,
-                        content: { type: 'image' },
-                        activate: true,
-                    }
-                ]
-            },
-            // Hazır blok setlerini (Navbar vb.) otomatik yüklemek için:
+            storageManager: false,
             plugins: ['gjs-preset-webpage'],
             pluginsOpts: {
-                'gjs-preset-webpage': {}
+                'gjs-preset-webpage': {
+                    // Blok menülerini ve araçlarını burada özelleştirebilirsin
+                }
+            },
+            // Estetik Renk Paleti
+            canvas: {
+                styles: ['https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&display=swap']
             }
         });
 
-        // HTML İndirme ve Sunucuya Gönderme Fonksiyonu
-        function saveContent() {
+        function toggleLanguage() {
+            currentLang = currentLang === 'tr' ? 'en' : 'tr';
+            
+            // Arayüz yazılarını güncelle
+            document.getElementById('txt-save').innerText = translations[currentLang].save;
+            document.getElementById('lang-btn').innerText = translations[currentLang].lang;
+
+            // GrapesJS Editör içindeki dili değiştir (GrapesJS I18N)
+            editor.I18n.setLocale(currentLang);
+            
+            alert(currentLang === 'tr' ? "Dil Türkçe yapıldı!" : "Language switched to English!");
+        }
+
+        function saveData() {
             const html = editor.getHtml();
             const css = editor.getCss();
             const fullCode = `<html><head><style>${css}</style></head><body>${html}</body></html>`;
 
-            // 1. Sunucuya Gönder (Python'a)
-            fetch('/save', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ html: html, css: css })
-            }).then(res => alert("Sunucuya kaydedildi!"));
-
-            // 2. Dosya Olarak İndir (Senin seveceğin kısım)
+            // İndirme işlemi
             const blob = new Blob([fullCode], { type: 'text/html' });
             const a = document.createElement('a');
             a.href = URL.createObjectURL(blob);
-            a.download = 'index.html';
+            a.download = 'tasarim.html';
             a.click();
         }
     </script>
-    <script src="https://unpkg.com/grapesjs-preset-webpage"></script>
 </body>
 </html>
