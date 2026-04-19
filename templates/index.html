@@ -2,124 +2,62 @@
 <html lang="tr">
 <head>
     <meta charset="UTF-8">
-    <title>Yusuf Studio | Pro Architect</title>
+    <title>Yusuf Studio | Force Load</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="https://unpkg.com/grapesjs/dist/css/grapes.min.css">
     <style>
-        :root { --primary: #3b82f6; --dark: #0f172a; }
-        body, html { height: 100%; margin: 0; font-family: 'Inter', sans-serif; overflow: hidden; }
-        
-        /* Editör Renk Paleti (Dark Theme) */
-        .gjs-one-bg { background-color: #1e293b !important; }
-        .gjs-two-color { color: #f8fafc !important; }
-        .gjs-three-bg { background-color: var(--primary) !important; }
-        .gjs-four-color { color: var(--primary) !important; }
-
-        header { 
-            height: 55px; 
-            background: #0f172a; 
-            color: white; 
-            display: flex; 
-            align-items: center; 
-            padding: 0 20px; 
-            justify-content: space-between;
-            border-bottom: 1px solid #334155;
-        }
-        .btn-clear { background:#ef4444; border:none; color:white; padding:7px 15px; border-radius:6px; cursor:pointer; font-weight: bold; }
+        body, html { height: 100%; margin: 0; overflow: hidden; font-family: 'Inter', sans-serif; }
+        #gjs { height: calc(100vh - 40px) !important; }
+        .top-bar { height: 40px; background: #1e293b; color: white; display: flex; align-items: center; padding: 0 20px; font-weight: bold; }
+        /* Panel renklerini zorla değiştiriyoruz */
+        .gjs-pn-views-container { border-left: 1px solid #334155 !important; background-color: #1e293b !important; }
+        .gjs-block { width: 100% !important; min-height: 80px !important; background: #334155 !important; color: white !important; border: 1px solid #475569 !important; }
     </style>
 </head>
 <body>
 
-    <header>
-        <div style="font-weight: 800; font-size: 1.2rem;">YUSUF <span style="color:var(--primary)">STUDIO</span></div>
-        <div id="auth-check">
-            <button class="btn-clear" onclick="if(confirm('Tüm tasarımı silmek istediğine emin misin?')) editor.runCommand('core:canvas-clear')">Sıfırla</button>
-        </div>
-    </header>
-
+    <div class="top-bar">YUSUF STUDIO 2026 - TASARIM MODU</div>
     <div id="gjs"></div>
 
     <script src="https://unpkg.com/grapesjs"></script>
-    <script src="https://unpkg.com/grapesjs-preset-webpage"></script>
-
     <script>
         const editor = grapesjs.init({
             container: '#gjs',
-            height: 'calc(100vh - 55px)',
             fromElement: true,
-            storageManager: { type: 'none' }, // Şimdilik hata vermemesi için local
-            plugins: ['gjs-preset-webpage'],
-            // PANELDEKİ BLOKLAR BURADA TANIMLANIYOR
+            height: '100%',
+            storageManager: false, // Hata vermemesi için tamamen kapattım
             blockManager: {
+                appendTo: '#gjs-blocks', // Blokları buraya zorla
                 blocks: [
                     {
-                        id: 'section-hero',
-                        label: '<i class="fa fa-desktop"></i><br>Hero Alanı',
-                        category: 'Bölümler',
-                        content: `<section style="padding: 80px 20px; text-align: center; background: #ffffff; border-bottom: 1px solid #eee;">
-                                    <h1 style="font-size: 3.5rem; color: #1e293b; margin-bottom: 15px;">Hayalindeki Siteyi Kur</h1>
-                                    <p style="font-size: 1.2rem; color: #64748b; max-width: 700px; margin: 0 auto 30px;">Yusuf Studio ile sürükle ve bırak teknolojisinin keyfini çıkarın.</p>
-                                    <button style="background: #3b82f6; color: white; padding: 15px 35px; border: none; border-radius: 8px; font-weight: bold; cursor: pointer;">Hemen Dene</button>
+                        id: 'section',
+                        label: '<b>Kutu Bölümü</b>',
+                        attributes: { class:'gjs-fonts gjs-f-b1' },
+                        content: `<section style="padding:50px; background:#fff; text-align:center;">
+                                    <h1>Başlık Buraya</h1>
+                                    <p>İçerik buraya...</p>
                                   </section>`,
                     },
                     {
-                        id: 'features-grid',
-                        label: '<i class="fa fa-th-large"></i><br>Özellikler',
-                        category: 'Bölümler',
-                        content: `<div style="display: flex; flex-wrap: wrap; padding: 50px; justify-content: center; gap: 20px;">
-                                    <div style="flex: 1; min-width: 250px; padding: 30px; border: 1px solid #e2e8f0; border-radius: 12px; text-align: center;">
-                                        <i class="fa fa-bolt" style="font-size: 40px; color: #3b82f6; margin-bottom: 15px;"></i>
-                                        <h3>Hızlı Altyapı</h3>
-                                        <p>En son teknolojilerle optimize edildi.</p>
-                                    </div>
-                                    <div style="flex: 1; min-width: 250px; padding: 30px; border: 1px solid #e2e8f0; border-radius: 12px; text-align: center;">
-                                        <i class="fa fa-shield" style="font-size: 40px; color: #3b82f6; margin-bottom: 15px;"></i>
-                                        <h3>Güvenli</h3>
-                                        <p>Verileriniz her zaman koruma altında.</p>
-                                    </div>
-                                  </div>`,
+                        id: 'text',
+                        label: 'Metin',
+                        content: '<div style="padding:10px;">Metin ekleyin...</div>',
                     },
                     {
-                        id: 'simple-text',
-                        label: '<i class="fa fa-align-left"></i><br>Yazı Bloğu',
-                        category: 'İçerik',
-                        content: '<div style="padding: 20px; line-height: 1.6; color: #334155;">Buraya dilediğiniz açıklamayı yazın...</div>',
-                    },
-                    {
-                        id: 'image-element',
-                        label: '<i class="fa fa-image"></i><br>Resim',
-                        category: 'Medya',
+                        id: 'image',
+                        label: 'Resim',
+                        select: true,
                         content: { type: 'image' },
-                    },
-                    {
-                        id: 'footer-pro',
-                        label: '<i class="fa fa-minus"></i><br>Alt Bilgi',
-                        category: 'Bölümler',
-                        content: `<footer style="padding: 30px; background: #0f172a; color: #94a3b8; text-align: center; font-size: 14px;">
-                                    <p>© 2026 Yusuf Studio. Tüm hakları saklıdır.</p>
-                                  </footer>`,
                     }
                 ]
             }
         });
 
-        // Sayfa açıldığında sağdaki blok panelini otomatik aktif et
+        // Blok panelini sağda zorla açan komut
         editor.on('load', () => {
-            const openBlocksBtn = editor.Panels.getButton('views', 'open-blocks');
-            if (openBlocksBtn) openBlocksBtn.set('active', 1);
-            
-            // Editör tuvaline başlangıç rehberi ekle
-            editor.setComponents(`
-                <div style="padding: 50px; text-align: center; border: 2px dashed #cbd5e1; margin: 40px; border-radius: 20px; color: #94a3b8;">
-                    <h2>Tasarımına Başla!</h2>
-                    <p>Sağ taraftaki blokları buraya sürükle ve bırak.</p>
-                </div>
-            `);
+            editor.Panels.getButton('views', 'open-blocks').set('active', true);
         });
-
-        // Türkçe dil desteği
-        editor.I18n.setLocale('tr');
     </script>
 </body>
 </html>
